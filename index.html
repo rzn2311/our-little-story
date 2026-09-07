@@ -15,6 +15,7 @@
     <!-- =========================
          HALAMAN AWAL
     ========================== -->
+
     <section id="halamanAwal" class="halaman aktif">
 
         <div class="card">
@@ -55,6 +56,7 @@
     <!-- =========================
          HALAMAN PERTANYAAN
     ========================== -->
+
     <section id="halamanPertanyaan" class="halaman">
 
         <div class="card">
@@ -63,10 +65,13 @@
 
             <h1>Little Questions ♡</h1>
 
-            <p id="nomorPertanyaan"></p>
+            <p id="nomorPertanyaan">
+                1 / 7
+            </p>
 
             <h2 id="pertanyaan"></h2>
 
+            <!-- Jawaban pertanyaan 1-6 -->
             <input
                 type="text"
                 id="jawaban"
@@ -74,13 +79,16 @@
                 autocomplete="off"
             >
 
+            <!-- Khusus pertanyaan terakhir -->
             <textarea
                 id="saran"
                 placeholder="Ceritakan moment paling bahagia kamu sama saya..."
+                rows="5"
+                style="display: none;"
             ></textarea>
 
             <button onclick="cekJawaban()">
-                JAWAB ♡
+                NEXT ♡
             </button>
 
             <p id="pesanJawaban" class="pesan"></p>
@@ -93,6 +101,7 @@
     <!-- =========================
          HALAMAN PHOTOBOOTH
     ========================== -->
+
     <section id="halamanPhotobooth" class="halaman">
 
         <div class="photo-card">
@@ -123,10 +132,13 @@
             </button>
 
             <p id="statusFoto">
-                Ambil 3 foto yaa ♡
+                Foto 1 dari 3 ♡
             </p>
 
         </div>
+
+        <!-- Canvas disembunyikan -->
+        <canvas id="canvas" style="display: none;"></canvas>
 
     </section>
 
@@ -134,6 +146,7 @@
     <!-- =========================
          HALAMAN HASIL
     ========================== -->
+
     <section id="halamanHasil" class="halaman">
 
         <div class="result-card">
