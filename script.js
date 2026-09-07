@@ -2,11 +2,9 @@
    ELEMENT
 ================================================== */
 
-let video =
-    document.getElementById("camera");
+let video = document.getElementById("camera");
 
-let canvas =
-    document.getElementById("canvas");
+let canvas = document.getElementById("canvas");
 
 let fotoArray = [];
 
@@ -14,6 +12,16 @@ let namaUser = "";
 
 let pertanyaanSekarang = 0;
 
+let cameraStream = null;
+
+
+/* ==================================================
+   TANGGAL
+================================================== */
+
+const tanggalJadianBenar = "26 desember 2024";
+
+const tanggalPhotobooth = "26 Desember 2024";
 
 
 /* ==================================================
@@ -102,7 +110,6 @@ const pertanyaan = [
 ];
 
 
-
 /* ==================================================
    NORMALISASI TEKS
 ================================================== */
@@ -119,13 +126,11 @@ function normalisasi(text) {
 }
 
 
-
 /* ==================================================
    CEK TANGGAL JADIAN
 ================================================== */
 
 function cekTanggal() {
-
 
     namaUser =
         document
@@ -154,14 +159,12 @@ function cekTanggal() {
     }
 
 
-
     let tanggalNormal =
         tanggal
             .replaceAll("/", " ")
             .replaceAll("-", " ")
             .replace(/\s+/g, " ")
             .trim();
-
 
 
     let benar = [
@@ -173,10 +176,13 @@ function cekTanggal() {
     ];
 
 
-
     if (
         benar.includes(tanggalNormal)
     ) {
+
+        document
+            .getElementById("salahTanggal")
+            .innerText = "";
 
 
         document
@@ -191,11 +197,12 @@ function cekTanggal() {
             .add("active");
 
 
+        pertanyaanSekarang = 0;
+
         tampilkanPertanyaan();
 
 
     } else {
-
 
         document
             .getElementById("salahTanggal")
@@ -207,13 +214,11 @@ function cekTanggal() {
 }
 
 
-
 /* ==================================================
    TAMPILKAN PERTANYAAN
 ================================================== */
 
 function tampilkanPertanyaan() {
-
 
     let data =
         pertanyaan[
@@ -230,12 +235,10 @@ function tampilkanPertanyaan() {
         pertanyaan.length;
 
 
-
     document
         .getElementById("judulPertanyaan")
         .innerText =
         data.soal;
-
 
 
     let area =
@@ -243,9 +246,7 @@ function tampilkanPertanyaan() {
             .getElementById("areaJawaban");
 
 
-
     if (data.tipe === "textarea") {
-
 
         area.innerHTML = `
 
@@ -256,9 +257,7 @@ function tampilkanPertanyaan() {
 
         `;
 
-
     } else {
-
 
         area.innerHTML = `
 
@@ -273,7 +272,6 @@ function tampilkanPertanyaan() {
     }
 
 
-
     document
         .getElementById("pesanJawaban")
         .innerText = "";
@@ -281,13 +279,11 @@ function tampilkanPertanyaan() {
 }
 
 
-
 /* ==================================================
    CEK 3 BAND
 ================================================== */
 
 function cekBand(input) {
-
 
     let teks =
         normalisasi(input);
@@ -314,26 +310,31 @@ function cekBand(input) {
 }
 
 
-
 /* ==================================================
    CEK JAWABAN
 ================================================== */
 
 function cekJawaban() {
 
+    let inputElement =
+        document.getElementById("jawaban");
+
+
+    if (!inputElement) {
+
+        return;
+
+    }
+
 
     let input =
-        document
-            .getElementById("jawaban")
-            .value
-            .trim();
+        inputElement.value.trim();
 
 
     let data =
         pertanyaan[
             pertanyaanSekarang
         ];
-
 
 
     /* ===============================================
@@ -343,7 +344,6 @@ function cekJawaban() {
     if (
         data.tipe === "textarea"
     ) {
-
 
         if (input === "") {
 
@@ -371,7 +371,6 @@ function cekJawaban() {
     }
 
 
-
     /* ===============================================
        3 BAND
     =============================================== */
@@ -380,11 +379,9 @@ function cekJawaban() {
         data.tipe === "bands"
     ) {
 
-
         if (
             cekBand(input)
         ) {
-
 
             pertanyaanSekarang++;
 
@@ -401,7 +398,6 @@ function cekJawaban() {
 
         } else {
 
-
             document
                 .getElementById("pesanJawaban")
                 .innerText =
@@ -413,7 +409,6 @@ function cekJawaban() {
         return;
 
     }
-
 
 
     /* ===============================================
@@ -430,12 +425,10 @@ function cekJawaban() {
         );
 
 
-
     if (
         jawabanUser ===
         jawabanBenar
     ) {
-
 
         pertanyaanSekarang++;
 
@@ -449,8 +442,15 @@ function cekJawaban() {
 
         }
 
-
     } else {
+
+        /*
+           PENTING:
+           Kalau jawaban salah,
+           TIDAK ADA pemanggilan kamera.
+        */
+
+        hentikanKamera();
 
 
         document
@@ -463,12 +463,56 @@ function cekJawaban() {
 }
 
 
-
 /* ==================================================
    MASUK PHOTOBOOTH
 ================================================== */
 
 function masukPhotobooth() {
+
+    /*
+       Pastikan kamera benar-benar mati
+       sebelum halaman photobooth dibuka.
+    */
+
+    hentikanKamera();
+
+
+    /*
+       Reset foto.
+    */
+
+    fotoArray = [];
+
+
+    document
+        .getElementById("fotoKe")
+        .innerText =
+        "Foto 1 dari 3";
+
+
+    document
+        .getElementById("fotoBtn")
+        .style
+        .display =
+        "inline-block";
+
+
+    document
+        .getElementById("fotoBtn")
+        .disabled =
+        false;
+
+
+    document
+        .getElementById("countdown")
+        .innerText =
+        "";
+
+
+    document
+        .getElementById("info")
+        .innerText =
+        tanggalPhotobooth + " ♡";
 
 
     document
@@ -483,16 +527,14 @@ function masukPhotobooth() {
         .add("active");
 
 
-    document
-        .getElementById("info")
-        .innerText =
-        "3 foto untuk satu kenangan ♡";
-
+    /*
+       Kamera BARU dibuka di sini,
+       setelah semua jawaban benar.
+    */
 
     bukaKamera();
 
 }
-
 
 
 /* ==================================================
@@ -501,11 +543,16 @@ function masukPhotobooth() {
 
 async function bukaKamera() {
 
-
     try {
 
+        /*
+           Pastikan kamera lama dimatikan.
+        */
 
-        const stream =
+        hentikanKamera();
+
+
+        cameraStream =
             await navigator
                 .mediaDevices
                 .getUserMedia({
@@ -523,11 +570,10 @@ async function bukaKamera() {
 
 
         video.srcObject =
-            stream;
+            cameraStream;
 
 
     } catch (error) {
-
 
         alert(
             "Kamera tidak bisa dibuka. Izinkan akses kamera terlebih dahulu."
@@ -541,12 +587,60 @@ async function bukaKamera() {
 }
 
 
+/* ==================================================
+   HENTIKAN KAMERA
+================================================== */
+
+function hentikanKamera() {
+
+    /*
+       Matikan semua track kamera.
+    */
+
+    if (cameraStream) {
+
+        cameraStream
+            .getTracks()
+            .forEach(
+                track =>
+                    track.stop()
+            );
+
+        cameraStream = null;
+
+    }
+
+
+    /*
+       Pastikan video juga tidak memakai stream.
+    */
+
+    if (video) {
+
+        video.srcObject = null;
+
+    }
+
+}
+
 
 /* ==================================================
    AMBIL FOTO
 ================================================== */
 
 function ambilFoto() {
+
+    if (
+        !cameraStream
+    ) {
+
+        alert(
+            "Kamera belum siap."
+        );
+
+        return;
+
+    }
 
 
     let tombol =
@@ -573,7 +667,6 @@ function ambilFoto() {
     let timer =
         setInterval(function () {
 
-
             angka--;
 
 
@@ -581,13 +674,10 @@ function ambilFoto() {
                 angka > 0
             ) {
 
-
                 countdown.innerText =
                     angka;
 
-
             } else {
-
 
                 clearInterval(timer);
 
@@ -600,11 +690,9 @@ function ambilFoto() {
 
             }
 
-
         }, 1000);
 
 }
-
 
 
 /* ==================================================
@@ -612,6 +700,14 @@ function ambilFoto() {
 ================================================== */
 
 function foto() {
+
+    if (
+        !cameraStream
+    ) {
+
+        return;
+
+    }
 
 
     canvas.width =
@@ -630,6 +726,9 @@ function foto() {
        Mirror agar hasil foto
        seperti kamera depan.
     */
+
+    context.save();
+
 
     context.translate(
         canvas.width,
@@ -656,6 +755,9 @@ function foto() {
     );
 
 
+    context.restore();
+
+
     let fotoData =
         canvas.toDataURL(
             "image/jpeg",
@@ -668,11 +770,9 @@ function foto() {
     );
 
 
-
     if (
         fotoArray.length < 3
     ) {
-
 
         document
             .getElementById("fotoKe")
@@ -687,9 +787,7 @@ function foto() {
             .disabled =
             false;
 
-
     } else {
-
 
         document
             .getElementById("fotoBtn")
@@ -714,37 +812,22 @@ function foto() {
 }
 
 
-
 /* ==================================================
    HASIL
 ================================================== */
 
 function tampilkanHasil() {
 
+    /*
+       MATIKAN KAMERA
+    */
 
-    /* MATIKAN KAMERA */
-
-    if (
-        video.srcObject
-    ) {
-
-
-        let tracks =
-            video
-                .srcObject
-                .getTracks();
+    hentikanKamera();
 
 
-        tracks.forEach(
-            track =>
-                track.stop()
-        );
-
-    }
-
-
-
-    /* PINDAH HALAMAN */
+    /*
+       PINDAH HALAMAN
+    */
 
     document
         .getElementById("photobooth")
@@ -758,11 +841,9 @@ function tampilkanHasil() {
         .add("active");
 
 
-
     let hasil =
         document
             .getElementById("hasil");
-
 
 
     /*
@@ -771,10 +852,7 @@ function tampilkanHasil() {
 
     hasil.innerHTML = `
 
-
-        <!-- =========================================
-             POLAROID 1
-        ========================================== -->
+        <!-- POLAROID 1 -->
 
         <div class="photostrip">
 
@@ -798,6 +876,7 @@ function tampilkanHasil() {
 
                 <img
                     src="${fotoArray[0]}"
+                    alt="Foto 1"
                 >
 
             </div>
@@ -807,6 +886,7 @@ function tampilkanHasil() {
 
                 <img
                     src="${fotoArray[1]}"
+                    alt="Foto 2"
                 >
 
             </div>
@@ -816,6 +896,7 @@ function tampilkanHasil() {
 
                 <img
                     src="${fotoArray[2]}"
+                    alt="Foto 3"
                 >
 
             </div>
@@ -827,7 +908,7 @@ function tampilkanHasil() {
 
                 <div class="photostrip-date">
 
-                    26 Desember 2024
+                    ${tanggalPhotobooth}
 
                 </div>
 
@@ -837,9 +918,7 @@ function tampilkanHasil() {
 
 
 
-        <!-- =========================================
-             POLAROID 2
-        ========================================== -->
+        <!-- POLAROID 2 -->
 
         <div class="photostrip">
 
@@ -863,6 +942,7 @@ function tampilkanHasil() {
 
                 <img
                     src="${fotoArray[0]}"
+                    alt="Foto 1"
                 >
 
             </div>
@@ -872,6 +952,7 @@ function tampilkanHasil() {
 
                 <img
                     src="${fotoArray[1]}"
+                    alt="Foto 2"
                 >
 
             </div>
@@ -881,6 +962,7 @@ function tampilkanHasil() {
 
                 <img
                     src="${fotoArray[2]}"
+                    alt="Foto 3"
                 >
 
             </div>
@@ -892,7 +974,7 @@ function tampilkanHasil() {
 
                 <div class="photostrip-date">
 
-                    26 Desember 2024
+                    ${tanggalPhotobooth}
 
                 </div>
 
@@ -905,13 +987,11 @@ function tampilkanHasil() {
 }
 
 
-
 /* ==================================================
-   SAVE PHOTO
+   SAVE / DOWNLOAD PHOTO
 ================================================== */
 
 async function simpanFoto() {
-
 
     let tombol =
         document
@@ -928,11 +1008,8 @@ async function simpanFoto() {
         true;
 
 
-
     /*
        CANVAS HASIL AKHIR
-
-       Dua photostrip berdampingan.
     */
 
     let saveCanvas =
@@ -960,7 +1037,6 @@ async function simpanFoto() {
         height;
 
 
-
     /* ===============================================
        BACKGROUND
     =============================================== */
@@ -975,7 +1051,6 @@ async function simpanFoto() {
         width,
         height
     );
-
 
 
     /* ===============================================
@@ -1001,10 +1076,9 @@ async function simpanFoto() {
     );
 
 
-
-    /*
+    /* ===============================================
        POSISI POLAROID
-    */
+    =============================================== */
 
     let stripWidth =
         285;
@@ -1032,10 +1106,9 @@ async function simpanFoto() {
         85;
 
 
-
-    /*
-       LOAD SEMUA FOTO TERLEBIH DAHULU
-    */
+    /* ===============================================
+       LOAD SEMUA FOTO
+    =============================================== */
 
     let images =
         [];
@@ -1046,7 +1119,6 @@ async function simpanFoto() {
         i < fotoArray.length;
         i++
     ) {
-
 
         let img =
             new Image();
@@ -1073,9 +1145,8 @@ async function simpanFoto() {
     }
 
 
-
     /* ===============================================
-       FUNGSI MEMBUAT POLAROID
+       BUAT POLAROID
     =============================================== */
 
     function buatPolaroid(
@@ -1085,8 +1156,9 @@ async function simpanFoto() {
         footer
     ) {
 
-
-        /* BACKGROUND */
+        /*
+           BACKGROUND
+        */
 
         ctx.fillStyle =
             "#ffb8cd";
@@ -1100,8 +1172,9 @@ async function simpanFoto() {
         );
 
 
-
-        /* KUCING */
+        /*
+           KUCING
+        */
 
         ctx.font =
             "42px Arial";
@@ -1119,8 +1192,9 @@ async function simpanFoto() {
         );
 
 
-
-        /* JUDUL */
+        /*
+           JUDUL
+        */
 
         ctx.fillStyle =
             "#713f50";
@@ -1138,8 +1212,9 @@ async function simpanFoto() {
         );
 
 
-
-        /* FOTO */
+        /*
+           FOTO
+        */
 
         let photoY =
             y + 92;
@@ -1153,13 +1228,11 @@ async function simpanFoto() {
             285;
 
 
-
         for (
             let i = 0;
             i < 3;
             i++
         ) {
-
 
             ctx.fillStyle =
                 "#ffffff";
@@ -1179,7 +1252,7 @@ async function simpanFoto() {
 
 
             /*
-               FOTO DI DALAM FRAME PUTIH
+               FOTO DI DALAM FRAME
             */
 
             ctx.drawImage(
@@ -1203,8 +1276,9 @@ async function simpanFoto() {
         }
 
 
-
-        /* FOOTER */
+        /*
+           FOOTER
+        */
 
         ctx.fillStyle =
             "#713f50";
@@ -1224,15 +1298,16 @@ async function simpanFoto() {
         );
 
 
-
-        /* TANGGAL */
+        /*
+           TANGGAL
+        */
 
         ctx.font =
             "11px Arial";
 
 
         ctx.fillText(
-            "26 Desember 2024",
+            tanggalPhotobooth,
             x +
             stripWidth / 2,
             y +
@@ -1241,7 +1316,6 @@ async function simpanFoto() {
         );
 
     }
-
 
 
     /* ===============================================
@@ -1261,7 +1335,6 @@ async function simpanFoto() {
     );
 
 
-
     /* ===============================================
        POLAROID KANAN
     =============================================== */
@@ -1279,7 +1352,6 @@ async function simpanFoto() {
         "forever ♡"
 
     );
-
 
 
     /* ===============================================
@@ -1302,15 +1374,30 @@ async function simpanFoto() {
         );
 
 
+    document.body.appendChild(link);
+
+
     link.click();
 
 
+    document.body.removeChild(link);
+
 
     tombol.innerText =
-        "💾 SAVE PHOTO";
+        "✅ PHOTO DOWNLOADED";
 
 
-    tombol.disabled =
-        false;
+    setTimeout(
+        function() {
+
+            tombol.innerText =
+                "💾 DOWNLOAD PHOTO";
+
+            tombol.disabled =
+                false;
+
+        },
+        2000
+    );
 
 }
