@@ -1,255 +1,347 @@
-// ===============================
-// OUR LITTLE STORY - SCRIPT.JS
-// ===============================
+// ======================================================
+// OUR LITTLE STORY
+// SCRIPT.JS
+// ======================================================
 
-// ===============================
-// DATA
-// ===============================
+
+// ======================================================
+// VARIABEL
+// ======================================================
 
 let video = document.getElementById("video");
 let canvas = document.getElementById("canvas");
 
 let fotoArray = [];
+
 let namaUser = "";
+
 let pertanyaanSekarang = 0;
+
 let cameraStream = null;
 
+
+// ======================================================
+// DATA
+// ======================================================
+
 const tanggalJadianBenar = "26 desember 2024";
+
 const tanggalPhotobooth = "26 Desember 2024";
 
-// Nomor WhatsApp tujuan
 const nomorWhatsApp = "6285776504819";
 
-// ===============================
-// DAFTAR PERTANYAAN
-// ===============================
+
+// ======================================================
+// PERTANYAAN
+// ======================================================
 
 const pertanyaan = [
+
     {
         soal: "Apa warna favorit kamu?",
         jawaban: "hitam"
     },
+
     {
         soal: "Ukuran baju kamu?",
-        jawaban: "L"
+        jawaban: "l"
     },
+
     {
         soal: "Ukuran sepatu kamu?",
         jawaban: "42"
     },
+
     {
         soal: "Kapan tanggal lahir kamu?",
-        jawaban: "23 November 2006"
+        jawaban: "23 november 2006"
     },
+
     {
         soal: "Apa genre musik favorit kamu?",
         jawaban: "rock"
     },
+
     {
         soal: "Sebutkan 3 band yang pernah kita tonton bareng!",
-        jawaban: "Lomba Sihir, Reality Club, Black Horses"
+        jawaban: "lomba sihir, reality club, black horses"
     },
+
     {
-        soal: "Ceritakan moment paling bahagia kamu sama saya",
+        soal: "Ceritakan moment paling bahagia kamu sama saya?",
         jawaban: ""
     }
+
 ];
 
-// ===============================
-// NORMALISASI JAWABAN
-// ===============================
+
+// ======================================================
+// NORMALISASI
+// ======================================================
 
 function normalisasi(teks) {
+
     return teks
         .toLowerCase()
         .trim()
         .replace(/\s+/g, " ");
+
 }
 
-// ===============================
-// CEK NAMA
-// ===============================
 
-function mulaiCerita() {
-
-    const inputNama = document.getElementById("nama");
-
-    if (!inputNama) {
-        return;
-    }
-
-    namaUser = inputNama.value.trim();
-
-    if (namaUser === "") {
-        alert("Masukkan nama kamu dulu ya ♡");
-        return;
-    }
-
-    const halamanAwal = document.getElementById("opening");
-    const halamanTanggal = document.getElementById("tanggalPage");
-
-    if (halamanAwal && halamanTanggal) {
-        halamanAwal.classList.remove("active");
-        halamanTanggal.classList.add("active");
-    }
-}
-
-// ===============================
-// CEK TANGGAL JADIAN
-// ===============================
+// ======================================================
+// CEK TANGGAL
+// ======================================================
 
 function cekTanggal() {
 
-    const inputTanggal = document.getElementById("tanggal");
+    const inputNama =
+        document.getElementById("nama");
 
-    if (!inputTanggal) {
+    const inputTanggal =
+        document.getElementById("tanggal");
+
+    const pesan =
+        document.getElementById("pesanTanggal");
+
+
+    // Ambil nama
+    namaUser =
+        inputNama.value.trim();
+
+
+    // Nama wajib diisi
+    if (namaUser === "") {
+
+        pesan.textContent =
+            "Isi nama kamu dulu ya ♡";
+
         return;
     }
 
-    const tanggal = normalisasi(inputTanggal.value);
 
-    if (
+    // Ambil tanggal
+    const tanggal =
+        normalisasi(inputTanggal.value);
+
+
+    // Cek tanggal benar
+    const tanggalBenar =
+
         tanggal === tanggalJadianBenar ||
+
         tanggal === "26 12 2024" ||
+
         tanggal === "26/12/2024" ||
-        tanggal === "26-12-2024"
-    ) {
 
-        const halamanTanggal = document.getElementById("tanggalPage");
-        const halamanPertanyaan = document.getElementById("questions");
+        tanggal === "26-12-2024";
 
-        if (halamanTanggal && halamanPertanyaan) {
-            halamanTanggal.classList.remove("active");
-            halamanPertanyaan.classList.add("active");
-        }
 
+    if (tanggalBenar) {
+
+        // Sembunyikan halaman awal
+        document
+            .getElementById("halamanAwal")
+            .classList.remove("aktif");
+
+
+        // Tampilkan halaman pertanyaan
+        document
+            .getElementById("halamanPertanyaan")
+            .classList.add("aktif");
+
+
+        // Mulai dari pertanyaan pertama
         pertanyaanSekarang = 0;
+
+
         tampilkanPertanyaan();
+
 
     } else {
 
-        const pesan = document.getElementById("pesanTanggal");
+        pesan.textContent =
+            "Kamu udah ga sayang 😭";
 
-        if (pesan) {
-            pesan.textContent = "Kamu udah ga sayang 😭";
-        }
     }
+
 }
 
-// ===============================
+
+// ======================================================
 // TAMPILKAN PERTANYAAN
-// ===============================
+// ======================================================
 
 function tampilkanPertanyaan() {
 
-    const soalElement = document.getElementById("soal");
-    const inputJawaban = document.getElementById("jawaban");
-    const nomorElement = document.getElementById("nomorSoal");
+    const nomor =
+        document.getElementById("nomorPertanyaan");
 
-    if (!soalElement || !inputJawaban) {
-        return;
-    }
+    const soal =
+        document.getElementById("pertanyaan");
 
-    const data = pertanyaan[pertanyaanSekarang];
+    const input =
+        document.getElementById("jawaban");
 
-    soalElement.textContent = data.soal;
+    const textarea =
+        document.getElementById("saran");
 
-    inputJawaban.value = "";
+    const pesan =
+        document.getElementById("pesanJawaban");
 
-    if (nomorElement) {
-        nomorElement.textContent =
-            `${pertanyaanSekarang + 1} / ${pertanyaan.length}`;
-    }
 
-    // Pertanyaan terakhir menggunakan textarea
-    if (pertanyaanSekarang === pertanyaan.length - 1) {
+    // Bersihkan pesan
+    pesan.textContent = "";
 
-        inputJawaban.outerHTML = `
-            <textarea
-                id="jawaban"
-                placeholder="Tulis moment paling bahagia kamu di sini ♡"
-                rows="5"
-            ></textarea>
-        `;
+
+    // Data pertanyaan
+    const data =
+        pertanyaan[pertanyaanSekarang];
+
+
+    // Nomor
+    nomor.textContent =
+        `${pertanyaanSekarang + 1} / ${pertanyaan.length}`;
+
+
+    // Pertanyaan
+    soal.textContent =
+        data.soal;
+
+
+    // Bersihkan input
+    input.value = "";
+
+    textarea.value = "";
+
+
+    // ==================================================
+    // PERTANYAAN TERAKHIR
+    // ==================================================
+
+    if (
+        pertanyaanSekarang ===
+        pertanyaan.length - 1
+    ) {
+
+        // Sembunyikan input biasa
+        input.style.display = "none";
+
+
+        // Tampilkan textarea
+        textarea.style.display = "block";
+
 
     } else {
 
-        // Kalau sebelumnya textarea, kembalikan menjadi input
-        if (inputJawaban.tagName.toLowerCase() === "textarea") {
+        // Pertanyaan biasa
+        input.style.display = "block";
 
-            inputJawaban.outerHTML = `
-                <input
-                    type="text"
-                    id="jawaban"
-                    placeholder="Jawaban kamu..."
-                >
-            `;
-        }
+        textarea.style.display = "none";
+
     }
+
 }
 
-// ===============================
+
+// ======================================================
 // CEK JAWABAN
-// ===============================
+// ======================================================
 
 function cekJawaban() {
 
-    const inputJawaban = document.getElementById("jawaban");
+    const input =
+        document.getElementById("jawaban");
 
-    if (!inputJawaban) {
-        return;
-    }
+    const textarea =
+        document.getElementById("saran");
 
-    const jawabanUser = inputJawaban.value.trim();
+    const pesan =
+        document.getElementById("pesanJawaban");
 
-    // Tidak boleh kosong
-    if (jawabanUser === "") {
 
-        const pesan = document.getElementById("pesanJawaban");
+    // ==================================================
+    // PERTANYAAN TERAKHIR
+    // ==================================================
 
-        if (pesan) {
-            pesan.style.color = "#e85c91";
-            pesan.textContent = "Jawab dulu ya ♡";
+    if (
+        pertanyaanSekarang ===
+        pertanyaan.length - 1
+    ) {
+
+        const saran =
+            textarea.value.trim();
+
+
+        // Jangan kosong
+        if (saran === "") {
+
+            pesan.textContent =
+                "Ceritakan dulu momentnya ya ♡";
+
+            return;
         }
 
-        return;
-    }
 
-    // ===============================
-    // PERTANYAAN TERAKHIR
-    // ===============================
-
-    if (pertanyaanSekarang === pertanyaan.length - 1) {
-
-        // Simpan jawaban
+        // Simpan
         localStorage.setItem(
             "momentBahagia",
-            jawabanUser
+            saran
         );
 
+
         // Kirim ke WhatsApp
-        kirimSaran(jawabanUser);
+        kirimSaran(saran);
+
 
         return;
     }
 
-    // ===============================
+
+    // ==================================================
+    // PERTANYAAN BIASA
+    // ==================================================
+
+    const jawabanUser =
+        normalisasi(input.value);
+
+
+    // Kosong
+    if (jawabanUser === "") {
+
+        pesan.textContent =
+            "Jawab dulu ya ♡";
+
+        return;
+    }
+
+
+    // ==================================================
     // PERTANYAAN BAND
-    // ===============================
+    // ==================================================
 
     if (pertanyaanSekarang === 5) {
 
-        const jawaban = normalisasi(jawabanUser);
-
         const wajib = [
+
             "lomba sihir",
+
             "reality club",
+
             "black horses"
+
         ];
 
-        const benar = wajib.every(function(band) {
-            return jawaban.includes(band);
-        });
+
+        const benar =
+            wajib.every(function(band) {
+
+                return jawabanUser.includes(
+                    band
+                );
+
+            });
+
 
         if (benar) {
 
@@ -260,60 +352,82 @@ function cekJawaban() {
         } else {
 
             tampilkanJawabanSalah();
+
         }
+
 
         return;
     }
 
-    // ===============================
-    // PERTANYAAN BIASA
-    // ===============================
+
+    // ==================================================
+    // PERTANYAAN NORMAL
+    // ==================================================
 
     const jawabanBenar =
-        normalisasi(pertanyaan[pertanyaanSekarang].jawaban);
+        normalisasi(
+            pertanyaan[
+                pertanyaanSekarang
+            ].jawaban
+        );
 
-    const jawabanMasuk =
-        normalisasi(jawabanUser);
 
-    if (jawabanMasuk === jawabanBenar) {
+    if (
+        jawabanUser ===
+        jawabanBenar
+    ) {
 
+        // Jawaban benar
         pertanyaanSekarang++;
 
+
+        // Next
         tampilkanPertanyaan();
+
 
     } else {
 
         tampilkanJawabanSalah();
+
     }
+
 }
 
-// ===============================
+
+// ======================================================
 // JAWABAN SALAH
-// ===============================
+// ======================================================
 
 function tampilkanJawabanSalah() {
 
-    const pesan = document.getElementById("pesanJawaban");
+    const pesan =
+        document.getElementById("pesanJawaban");
 
-    if (pesan) {
 
-        pesan.style.color = "#e85c91";
+    pesan.textContent =
+        "Hmm, kayaknya jawaban kamu salah deh 😭";
 
-        pesan.textContent =
-            "Hmm, kayaknya jawaban kamu salah deh 😭";
-    }
 }
 
-// ===============================
+
+// ======================================================
 // KIRIM SARAN KE WHATSAPP
-// ===============================
+// ======================================================
 
 function kirimSaran(saran) {
 
     const pesanElement =
-        document.getElementById("pesanJawaban");
+        document.getElementById(
+            "pesanJawaban"
+        );
+
+
+    // ==================================================
+    // ISI PESAN
+    // ==================================================
 
     const isiPesan =
+
 `💌 OUR LITTLE STORY ♡
 
 Nama: ${namaUser}
@@ -325,143 +439,167 @@ ${saran}
 
 ♡ Sent from Our Little Story`;
 
-    const pesanEncoded =
-        encodeURIComponent(isiPesan);
 
+    // Encode
+    const pesanEncoded =
+        encodeURIComponent(
+            isiPesan
+        );
+
+
+    // Link WhatsApp
     const linkWhatsApp =
+
         "https://wa.me/" +
+
         nomorWhatsApp +
+
         "?text=" +
+
         pesanEncoded;
 
-    if (pesanElement) {
 
-        pesanElement.style.color = "#e85c91";
+    // Tampilkan pesan
+    pesanElement.textContent =
+        "Membuka WhatsApp... ♡";
 
-        pesanElement.textContent =
-            "Membuka WhatsApp... ♡";
-    }
 
-    // ===============================
+    // ==================================================
     // BUKA WHATSAPP
-    // ===============================
+    // ==================================================
 
     window.open(
         linkWhatsApp,
         "_blank"
     );
 
-    // ===============================
-    // LANJUT KE PHOTOBOX
-    // ===============================
+
+    // ==================================================
+    // LANGSUNG NEXT KE PHOTOBOX
+    // ==================================================
 
     setTimeout(function() {
 
         masukPhotobooth();
 
-    }, 1500);
+    }, 1000);
+
 }
 
-// ===============================
-// MASUK PHOTOBOOTH
-// ===============================
+
+// ======================================================
+// MASUK PHOTOBOX
+// ======================================================
 
 function masukPhotobooth() {
 
-    hentikanKamera();
 
+    // Reset foto
     fotoArray = [];
 
-    const halamanPertanyaan =
-        document.getElementById("questions");
 
-    const halamanPhotobooth =
-        document.getElementById("photobooth");
+    // Hentikan kamera lama
+    hentikanKamera();
 
-    const halamanHasil =
-        document.getElementById("result");
 
-    if (halamanPertanyaan) {
-        halamanPertanyaan.classList.remove("active");
-    }
+    // ==================================================
+    // SEMBUNYIKAN PERTANYAAN
+    // ==================================================
 
-    if (halamanHasil) {
-        halamanHasil.classList.remove("active");
-    }
+    document
+        .getElementById("halamanPertanyaan")
+        .classList.remove("aktif");
 
-    if (halamanPhotobooth) {
-        halamanPhotobooth.classList.add("active");
-    }
 
-    const info =
-        document.getElementById("info");
+    // ==================================================
+    // TAMPILKAN PHOTOBOX
+    // ==================================================
 
-    if (info) {
-        info.textContent =
+    document
+        .getElementById("halamanPhotobooth")
+        .classList.add("aktif");
+
+
+    // Info tanggal
+    document
+        .getElementById("info")
+        .textContent =
             tanggalPhotobooth + " ♡";
-    }
 
-    const counter =
-        document.getElementById("counter");
 
-    if (counter) {
-        counter.textContent =
-            "Foto 1 dari 3";
-    }
+    // Status
+    document
+        .getElementById("statusFoto")
+        .textContent =
+            "Foto 1 dari 3 ♡";
 
-    const countdown =
-        document.getElementById("countdown");
 
-    if (countdown) {
-        countdown.textContent = "";
-    }
+    // Countdown kosong
+    document
+        .getElementById("countdown")
+        .textContent = "";
 
+
+    // Buka kamera
     bukaKamera();
+
 }
 
-// ===============================
+
+// ======================================================
 // BUKA KAMERA
-// ===============================
+// ======================================================
 
 async function bukaKamera() {
 
     try {
 
         cameraStream =
-            await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: "user"
-                },
-                audio: false
-            });
+            await navigator.mediaDevices
+                .getUserMedia({
+
+                    video: {
+
+                        facingMode: "user"
+
+                    },
+
+                    audio: false
+
+                });
+
 
         video =
             document.getElementById("video");
 
-        if (video) {
 
-            video.srcObject =
-                cameraStream;
+        video.srcObject =
+            cameraStream;
 
-            video.play();
-        }
+
+        await video.play();
+
 
     } catch (error) {
 
         console.error(
-            "Kamera tidak bisa dibuka:",
+            "Camera error:",
             error
         );
 
+
         alert(
-            "Kamera tidak bisa dibuka. Pastikan izin kamera sudah diberikan ya ♡"
+            "Kamera tidak bisa dibuka. Izinkan akses kamera terlebih dahulu ya ♡"
         );
+
     }
+
 }
 
-// ===============================
+
+// ======================================================
 // HENTIKAN KAMERA
-// ===============================
+// ======================================================
 
 function hentikanKamera() {
 
@@ -470,116 +608,176 @@ function hentikanKamera() {
         cameraStream
             .getTracks()
             .forEach(function(track) {
+
                 track.stop();
+
             });
 
+
         cameraStream = null;
+
     }
+
 
     if (video) {
+
         video.srcObject = null;
+
     }
+
 }
 
-// ===============================
+
+// ======================================================
 // AMBIL FOTO
-// ===============================
+// ======================================================
 
 function ambilFoto() {
 
+
+    // Maksimal 3 foto
     if (fotoArray.length >= 3) {
+
         return;
+
     }
 
+
     const countdown =
-        document.getElementById("countdown");
+        document.getElementById(
+            "countdown"
+        );
+
 
     let angka = 3;
 
-    if (countdown) {
-        countdown.textContent = angka;
-    }
+
+    countdown.textContent =
+        angka;
+
 
     const timer =
         setInterval(function() {
 
+
             angka--;
 
-            if (countdown) {
 
-                if (angka > 0) {
+            if (angka > 0) {
 
-                    countdown.textContent =
-                        angka;
+                countdown.textContent =
+                    angka;
 
-                } else {
+            } else {
 
-                    countdown.textContent =
-                        "📸";
-                }
+                countdown.textContent =
+                    "📸";
+
             }
+
 
             if (angka <= 0) {
 
                 clearInterval(timer);
+
 
                 setTimeout(function() {
 
                     foto();
 
                 }, 300);
+
             }
 
+
         }, 1000);
+
 }
 
-// ===============================
-// FOTO KE CANVAS
-// ===============================
+
+// ======================================================
+// FOTO
+// ======================================================
 
 function foto() {
+
 
     video =
         document.getElementById("video");
 
+
     canvas =
         document.getElementById("canvas");
 
-    if (!video || !canvas) {
+
+    if (
+        !video ||
+        !canvas ||
+        video.videoWidth === 0
+    ) {
+
+        alert(
+            "Kamera belum siap. Tunggu sebentar ya ♡"
+        );
+
         return;
+
     }
+
 
     const ctx =
         canvas.getContext("2d");
 
+
+    // Ukuran canvas
     canvas.width =
         video.videoWidth;
+
 
     canvas.height =
         video.videoHeight;
 
-    // Mirror seperti kamera depan HP
+
+    // ==================================================
+    // MIRROR
+    // ==================================================
+
     ctx.save();
+
 
     ctx.translate(
         canvas.width,
         0
     );
 
+
     ctx.scale(
         -1,
         1
     );
 
+
     ctx.drawImage(
+
         video,
+
         0,
+
         0,
+
         canvas.width,
+
         canvas.height
+
     );
 
+
     ctx.restore();
+
+
+    // ==================================================
+    // SIMPAN FOTO
+    // ==================================================
 
     const fotoData =
         canvas.toDataURL(
@@ -587,198 +785,269 @@ function foto() {
             0.9
         );
 
-    fotoArray.push(fotoData);
 
-    // Update counter
-    const counter =
-        document.getElementById("counter");
+    fotoArray.push(
+        fotoData
+    );
 
-    if (counter) {
 
-        if (fotoArray.length < 3) {
+    // ==================================================
+    // UPDATE STATUS
+    // ==================================================
 
-            counter.textContent =
-                `Foto ${fotoArray.length + 1} dari 3`;
+    const status =
+        document.getElementById(
+            "statusFoto"
+        );
 
-        } else {
 
-            counter.textContent =
-                "Semua foto selesai ♡";
-        }
+    if (
+        fotoArray.length < 3
+    ) {
+
+        status.textContent =
+            `Foto ${fotoArray.length + 1} dari 3 ♡`;
+
+    } else {
+
+        status.textContent =
+            "Semua foto selesai ♡";
+
     }
 
-    const countdown =
-        document.getElementById("countdown");
 
-    if (countdown) {
-        countdown.textContent = "";
-    }
+    document
+        .getElementById("countdown")
+        .textContent = "";
 
-    // Kalau sudah 3 foto
-    if (fotoArray.length === 3) {
+
+    // ==================================================
+    // SELESAI 3 FOTO
+    // ==================================================
+
+    if (
+        fotoArray.length === 3
+    ) {
 
         setTimeout(function() {
 
             tampilkanHasil();
 
-        }, 500);
+        }, 800);
+
     }
+
 }
 
-// ===============================
+
+// ======================================================
 // TAMPILKAN HASIL
-// ===============================
+// ======================================================
 
 function tampilkanHasil() {
 
+
+    // Matikan kamera
     hentikanKamera();
 
-    const halamanPhotobooth =
-        document.getElementById("photobooth");
 
-    const halamanHasil =
-        document.getElementById("result");
+    // Sembunyikan photobox
+    document
+        .getElementById("halamanPhotobooth")
+        .classList.remove("aktif");
 
-    if (halamanPhotobooth) {
-        halamanPhotobooth.classList.remove("active");
-    }
 
-    if (halamanHasil) {
-        halamanHasil.classList.add("active");
-    }
+    // Tampilkan hasil
+    document
+        .getElementById("halamanHasil")
+        .classList.add("aktif");
+
 
     const hasil =
-        document.getElementById("hasil");
+        document.getElementById(
+            "hasilFoto"
+        );
 
-    if (!hasil) {
-        return;
-    }
 
     hasil.innerHTML = "";
 
-    // ===============================
+
+    // ==================================================
     // STRIP 1
-    // ===============================
+    // ==================================================
 
     const strip1 =
         document.createElement("div");
 
+
     strip1.className =
         "photo-strip";
 
+
     strip1.innerHTML = `
+
         <div class="strip-title">
             🐱 OUR LITTLE STORY
         </div>
 
         <img src="${fotoArray[0]}">
+
         <img src="${fotoArray[1]}">
+
         <img src="${fotoArray[2]}">
 
         <div class="strip-date">
             ${tanggalPhotobooth}
         </div>
+
     `;
 
-    // ===============================
+
+    // ==================================================
     // STRIP 2
-    // ===============================
+    // ==================================================
 
     const strip2 =
         document.createElement("div");
 
+
     strip2.className =
         "photo-strip";
 
+
     strip2.innerHTML = `
+
         <div class="strip-title">
             🐱 OUR LITTLE STORY
         </div>
 
         <img src="${fotoArray[0]}">
+
         <img src="${fotoArray[1]}">
+
         <img src="${fotoArray[2]}">
 
         <div class="strip-date">
             ${tanggalPhotobooth}
         </div>
+
     `;
 
-    hasil.appendChild(strip1);
-    hasil.appendChild(strip2);
+
+    hasil.appendChild(
+        strip1
+    );
+
+
+    hasil.appendChild(
+        strip2
+    );
+
 }
 
-// ===============================
-// SIMPAN / DOWNLOAD FOTO
-// ===============================
 
-function simpanFoto() {
+// ======================================================
+// DOWNLOAD FOTO
+// ======================================================
 
-    if (fotoArray.length < 3) {
+async function simpanFoto() {
+
+
+    if (
+        fotoArray.length < 3
+    ) {
 
         alert(
             "Foto belum lengkap ♡"
         );
 
         return;
+
     }
 
+
+    const width = 700;
+
+    const height = 1200;
+
+
     const downloadCanvas =
-        document.createElement("canvas");
+        document.createElement(
+            "canvas"
+        );
+
+
+    downloadCanvas.width =
+        width;
+
+    downloadCanvas.height =
+        height;
+
 
     const ctx =
-        downloadCanvas.getContext("2d");
+        downloadCanvas.getContext(
+            "2d"
+        );
 
-    // Ukuran gambar hasil
-    downloadCanvas.width = 700;
-    downloadCanvas.height = 1200;
 
-    // ===============================
-    // BACKGROUND PINK
-    // ===============================
+    // ==================================================
+    // BACKGROUND
+    // ==================================================
 
-    ctx.fillStyle = "#ffd6e7";
+    ctx.fillStyle =
+        "#ffd6e7";
+
 
     ctx.fillRect(
         0,
         0,
-        downloadCanvas.width,
-        downloadCanvas.height
+        width,
+        height
     );
 
-    // ===============================
+
+    // ==================================================
     // JUDUL
-    // ===============================
+    // ==================================================
 
-    ctx.fillStyle = "#222";
+    ctx.fillStyle =
+        "#222";
 
-    ctx.textAlign = "center";
+
+    ctx.textAlign =
+        "center";
+
 
     ctx.font =
-        "bold 32px Arial";
+        "bold 30px Arial";
+
 
     ctx.fillText(
         "🐱 OUR LITTLE STORY",
-        350,
-        55
+        width / 2,
+        50
     );
 
-    // ===============================
-    // FOTO
-    // ===============================
+
+    // ==================================================
+    // POSISI STRIP
+    // ==================================================
 
     const stripWidth = 270;
-    const stripHeight = 980;
 
-    const jarak = 35;
+    const stripHeight = 1000;
 
     const x1 = 60;
+
     const x2 = 370;
 
-    const y = 100;
+    const y = 90;
 
-    // Background strip 1
-    ctx.fillStyle = "#ffffff";
+
+    // Background strip
+    ctx.fillStyle =
+        "#ffffff";
+
 
     ctx.fillRect(
         x1,
@@ -787,7 +1056,7 @@ function simpanFoto() {
         stripHeight
     );
 
-    // Background strip 2
+
     ctx.fillRect(
         x2,
         y,
@@ -795,197 +1064,308 @@ function simpanFoto() {
         stripHeight
     );
 
-    // ===============================
-    // GAMBAR DALAM STRIP
-    // ===============================
 
-    const tinggiFoto = 260;
+    // ==================================================
+    // LOAD IMAGE
+    // ==================================================
 
-    function gambarFoto(
-        data,
+    const loadImage =
+        function(src) {
+
+            return new Promise(
+                function(resolve) {
+
+                    const img =
+                        new Image();
+
+                    img.onload =
+                        function() {
+
+                            resolve(img);
+
+                        };
+
+                    img.src = src;
+
+                }
+            );
+
+        };
+
+
+    const images =
+        await Promise.all(
+
+            fotoArray.map(
+                function(src) {
+
+                    return loadImage(
+                        src
+                    );
+
+                }
+            )
+
+        );
+
+
+    // ==================================================
+    // GAMBAR FOTO
+    // ==================================================
+
+    const fotoWidth = 250;
+
+    const fotoHeight = 270;
+
+
+    function gambarCrop(
+        img,
         x,
-        yFoto
+        yPos
     ) {
 
-        const img =
-            new Image();
+        const scale =
+            Math.max(
 
-        img.src = data;
+                fotoWidth /
+                    img.width,
 
-        img.onload = function() {
+                fotoHeight /
+                    img.height
 
-            const rasio =
-                Math.max(
-                    250 / img.width,
-                    tinggiFoto / img.height
-                );
-
-            const width =
-                img.width * rasio;
-
-            const height =
-                img.height * rasio;
-
-            const cropX =
-                (width - 250) / 2;
-
-            const cropY =
-                (height - tinggiFoto) / 2;
-
-            ctx.drawImage(
-                img,
-                cropX / rasio,
-                cropY / rasio,
-                250 / rasio,
-                tinggiFoto / rasio,
-                x + 10,
-                yFoto,
-                250,
-                tinggiFoto
             );
-        };
+
+
+        const sourceWidth =
+            fotoWidth /
+            scale;
+
+
+        const sourceHeight =
+            fotoHeight /
+            scale;
+
+
+        const sourceX =
+            (
+                img.width -
+                sourceWidth
+            ) / 2;
+
+
+        const sourceY =
+            (
+                img.height -
+                sourceHeight
+            ) / 2;
+
+
+        ctx.drawImage(
+
+            img,
+
+            sourceX,
+
+            sourceY,
+
+            sourceWidth,
+
+            sourceHeight,
+
+            x,
+
+            yPos,
+
+            fotoWidth,
+
+            fotoHeight
+
+        );
+
     }
 
-    gambarFoto(
-        fotoArray[0],
+
+    // Strip 1
+    gambarCrop(
+        images[0],
         x1 + 10,
         y + 15
     );
 
-    gambarFoto(
-        fotoArray[1],
+
+    gambarCrop(
+        images[1],
         x1 + 10,
-        y + 280
+        y + 290
     );
 
-    gambarFoto(
-        fotoArray[2],
+
+    gambarCrop(
+        images[2],
         x1 + 10,
-        y + 545
+        y + 565
     );
 
-    gambarFoto(
-        fotoArray[0],
+
+    // Strip 2
+    gambarCrop(
+        images[0],
         x2 + 10,
         y + 15
     );
 
-    gambarFoto(
-        fotoArray[1],
+
+    gambarCrop(
+        images[1],
         x2 + 10,
-        y + 280
+        y + 290
     );
 
-    gambarFoto(
-        fotoArray[2],
+
+    gambarCrop(
+        images[2],
         x2 + 10,
-        y + 545
+        y + 565
     );
 
-    // ===============================
+
+    // ==================================================
     // TANGGAL
-    // ===============================
+    // ==================================================
 
-    ctx.fillStyle = "#222";
+    ctx.fillStyle =
+        "#222";
+
 
     ctx.font =
-        "bold 20px Arial";
+        "bold 18px Arial";
+
 
     ctx.textAlign =
         "center";
 
-    ctx.fillText(
-        tanggalPhotobooth,
-        x1 + stripWidth / 2,
-        y + 950
-    );
 
     ctx.fillText(
+
         tanggalPhotobooth,
-        x2 + stripWidth / 2,
-        y + 950
+
+        x1 +
+            stripWidth / 2,
+
+        y + 960
+
     );
 
-    // ===============================
+
+    ctx.fillText(
+
+        tanggalPhotobooth,
+
+        x2 +
+            stripWidth / 2,
+
+        y + 960
+
+    );
+
+
+    // ==================================================
     // DOWNLOAD
-    // ===============================
+    // ==================================================
 
-    setTimeout(function() {
+    downloadCanvas.toBlob(
 
-        downloadCanvas.toBlob(
-            function(blob) {
+        function(blob) {
 
-                const url =
-                    URL.createObjectURL(blob);
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
 
-                const link =
-                    document.createElement("a");
 
-                link.href = url;
+            const link =
+                document.createElement(
+                    "a"
+                );
 
-                link.download =
-                    "our-little-moment.png";
 
-                document.body.appendChild(link);
+            link.href =
+                url;
 
-                link.click();
 
-                document.body.removeChild(link);
+            link.download =
+                "our-little-moment.png";
 
-                URL.revokeObjectURL(url);
 
-            },
-            "image/png"
-        );
+            document.body.appendChild(
+                link
+            );
 
-    }, 500);
+
+            link.click();
+
+
+            document.body.removeChild(
+                link
+            );
+
+
+            URL.revokeObjectURL(
+                url
+            );
+
+        },
+
+        "image/png"
+
+    );
+
 }
 
-// ===============================
-// ULANGI PHOTOBOX
-// ===============================
 
-function ulangiFoto() {
+// ======================================================
+// AMBIL ULANG
+// ======================================================
 
+function ulangFoto() {
+
+
+    // Stop kamera
     hentikanKamera();
 
+
+    // Reset foto
     fotoArray = [];
 
-    const halamanHasil =
-        document.getElementById("result");
 
-    const halamanPhotobooth =
-        document.getElementById("photobooth");
+    // Sembunyikan hasil
+    document
+        .getElementById("halamanHasil")
+        .classList.remove("aktif");
 
-    if (halamanHasil) {
-        halamanHasil.classList.remove("active");
-    }
 
-    if (halamanPhotobooth) {
-        halamanPhotobooth.classList.add("active");
-    }
+    // Tampilkan photobox
+    document
+        .getElementById("halamanPhotobooth")
+        .classList.add("aktif");
 
-    const counter =
-        document.getElementById("counter");
 
-    if (counter) {
-        counter.textContent =
-            "Foto 1 dari 3";
-    }
+    // Reset status
+    document
+        .getElementById("statusFoto")
+        .textContent =
+            "Foto 1 dari 3 ♡";
 
-    const countdown =
-        document.getElementById("countdown");
 
-    if (countdown) {
-        countdown.textContent = "";
-    }
-
+    // Buka kamera
     bukaKamera();
+
 }
 
-// ===============================
-// STOP KAMERA SAAT KELUAR HALAMAN
-// ===============================
+
+// ======================================================
+// STOP KAMERA SAAT HALAMAN DITUTUP
+// ======================================================
 
 window.addEventListener(
     "beforeunload",
