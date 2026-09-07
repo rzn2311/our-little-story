@@ -1,31 +1,36 @@
+/* ===============================
+   RESET
+================================ */
+
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    min-height: 100vh;
+    padding: 0;
 
     font-family: Arial, sans-serif;
 
-    background:
-        radial-gradient(circle at top, #ffd6e7, #ffb6d2 45%, #ff8fba);
+    background: #ffd6e7;
 
     color: #222;
+
+    min-height: 100vh;
 }
 
 
-/* =========================
+/* ===============================
    HALAMAN
-========================= */
+================================ */
 
 .halaman {
     display: none;
 
     min-height: 100vh;
 
-    align-items: center;
     justify-content: center;
+    align-items: center;
 
     padding: 20px;
 }
@@ -35,38 +40,41 @@ body {
 }
 
 
-/* =========================
+/* ===============================
    CARD
-========================= */
+================================ */
 
-.card,
-.photo-card,
-.result-card {
-
+.card {
     width: 100%;
     max-width: 430px;
 
-    background: rgba(255, 255, 255, 0.94);
+    background: rgba(255, 255, 255, 0.95);
+
+    padding: 35px 25px;
 
     border-radius: 25px;
-
-    padding: 30px;
 
     text-align: center;
 
     box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.18);
+        0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
 
-/* =========================
-   TEXT
-========================= */
+/* ===============================
+   CAT
+================================ */
 
 .cat {
     font-size: 55px;
+
     margin-bottom: 5px;
 }
+
+
+/* ===============================
+   TEXT
+================================ */
 
 h1 {
     margin-top: 5px;
@@ -77,83 +85,74 @@ h1 {
 
 h2 {
     font-size: 21px;
+
+    line-height: 1.5;
+
     margin: 20px 0;
 }
 
 .subtitle {
     color: #777;
-}
 
-#nomorPertanyaan {
-    color: #e85c91;
-    font-weight: bold;
+    margin-bottom: 25px;
 }
 
 
-/* =========================
+/* ===============================
    INPUT
-========================= */
+================================ */
 
 input,
 textarea {
-
     width: 100%;
 
     padding: 14px 16px;
 
-    margin-top: 12px;
+    margin-bottom: 15px;
 
-    border: 2px solid #f3a5c3;
+    border: 2px solid #f3b4cc;
 
-    border-radius: 15px;
+    border-radius: 14px;
 
     outline: none;
 
-    font-size: 16px;
-
     font-family: inherit;
 
-    background: white;
+    font-size: 15px;
+
+    background: #fff;
 }
 
 input:focus,
 textarea:focus {
-
-    border-color: #e84f8a;
-
-    box-shadow:
-        0 0 0 3px rgba(232, 79, 138, 0.12);
+    border-color: #e85c91;
 }
 
 textarea {
-
-    height: 130px;
-
     resize: vertical;
+
+    min-height: 130px;
 }
 
 
-/* =========================
+/* ===============================
    BUTTON
-========================= */
+================================ */
 
 button {
-
     width: 100%;
-
-    border: none;
-
-    border-radius: 15px;
 
     padding: 14px;
 
-    margin-top: 18px;
+    border: none;
 
-    background: #e84f8a;
+    border-radius: 14px;
+
+    background: #e85c91;
 
     color: white;
 
-    font-size: 16px;
+    font-size: 15px;
 
     font-weight: bold;
 
@@ -163,45 +162,87 @@ button {
 }
 
 button:hover {
+    transform: scale(1.02);
 
-    transform: translateY(-2px);
-
-    background: #d93f79;
+    background: #d94d83;
 }
 
 button:active {
-
     transform: scale(0.98);
 }
 
 button.secondary {
+    margin-top: 10px;
 
-    background: #555;
+    background: #777;
 }
 
 
-/* =========================
-   PESAN ERROR
-========================= */
+/* ===============================
+   PESAN
+================================ */
 
 .pesan {
-
-    min-height: 24px;
+    min-height: 22px;
 
     margin-top: 15px;
 
-    color: #e53935;
+    font-size: 14px;
+
+    color: #e85c91;
+}
+
+
+/* ===============================
+   NOMOR PERTANYAAN
+================================ */
+
+#nomorPertanyaan {
+    color: #e85c91;
+
+    font-weight: bold;
+
+    margin-bottom: 5px;
+}
+
+
+/* ===============================
+   PHOTO CARD
+================================ */
+
+.photo-card {
+    width: 100%;
+
+    max-width: 500px;
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 25px;
+
+    text-align: center;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.photo-card h1 {
+    font-size: 27px;
+}
+
+#info {
+    color: #e85c91;
 
     font-weight: bold;
 }
 
 
-/* =========================
+/* ===============================
    CAMERA
-========================= */
+================================ */
 
 .camera-box {
-
     position: relative;
 
     width: 100%;
@@ -212,24 +253,27 @@ button.secondary {
 
     background: #111;
 
-    margin-top: 20px;
+    margin: 20px 0;
 }
 
 #video {
-
     display: block;
 
     width: 100%;
 
-    aspect-ratio: 4 / 3;
-
-    object-fit: cover;
+    height: auto;
 
     transform: scaleX(-1);
+
+    background: #111;
 }
 
-#countdown {
 
+/* ===============================
+   COUNTDOWN
+================================ */
+
+#countdown {
     position: absolute;
 
     top: 50%;
@@ -244,87 +288,124 @@ button.secondary {
     font-weight: bold;
 
     text-shadow:
-        0 3px 15px black;
+        0 2px 10px rgba(0, 0, 0, 0.5);
 }
+
+
+/* ===============================
+   STATUS FOTO
+================================ */
 
 #statusFoto {
-
     color: #777;
 
-    margin-bottom: 0;
+    margin-top: 15px;
 }
 
 
-/* =========================
-   HASIL FOTO
-========================= */
+/* ===============================
+   RESULT CARD
+================================ */
+
+.result-card {
+    width: 100%;
+
+    max-width: 800px;
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 25px;
+
+    text-align: center;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ===============================
+   HASIL PHOTO STRIP
+================================ */
 
 #hasilFoto {
-
     display: flex;
 
     justify-content: center;
 
-    gap: 15px;
+    align-items: flex-start;
+
+    gap: 20px;
 
     flex-wrap: wrap;
 
-    margin: 20px 0;
+    margin: 25px 0;
 }
 
-.strip {
 
-    width: 150px;
+/* ===============================
+   PHOTO STRIP
+================================ */
 
-    background: white;
+.photo-strip {
+    width: 220px;
 
     padding: 10px;
 
+    background: white;
+
+    border: 1px solid #ddd;
+
     box-shadow:
-        0 5px 15px rgba(0, 0, 0, 0.2);
+        0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
-.strip-title {
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    margin-bottom: 8px;
-}
-
-.strip img {
-
+.photo-strip img {
     display: block;
 
     width: 100%;
 
-    margin-bottom: 7px;
+    aspect-ratio: 1 / 1;
+
+    object-fit: cover;
+
+    margin-bottom: 8px;
+}
+
+.strip-title {
+    font-size: 13px;
+
+    font-weight: bold;
+
+    text-align: center;
+
+    margin-bottom: 8px;
 }
 
 .strip-date {
+    text-align: center;
 
-    font-size: 10px;
-
-    margin-top: 5px;
+    font-size: 12px;
 
     font-weight: bold;
+
+    margin-top: 8px;
+
+    margin-bottom: 3px;
 }
 
 
-/* =========================
+/* ===============================
    MOBILE
-========================= */
+================================ */
 
-@media (max-width: 500px) {
+@media (max-width: 600px) {
 
     .card,
     .photo-card,
     .result-card {
-
-        padding: 22px;
-
-        border-radius: 20px;
+        padding: 25px 18px;
     }
 
     h1 {
@@ -336,11 +417,15 @@ button.secondary {
     }
 
     #hasilFoto {
-        gap: 10px;
+        gap: 12px;
     }
 
-    .strip {
-        width: 135px;
+    .photo-strip {
+        width: 45%;
+        min-width: 150px;
     }
 
+    #countdown {
+        font-size: 60px;
+    }
 }
