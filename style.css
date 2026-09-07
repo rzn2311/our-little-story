@@ -1,777 +1,346 @@
-/* ==================================================
-   DASAR
-================================================== */
-
 * {
     box-sizing: border-box;
 }
 
-
 body {
-
     margin: 0;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    color: #5a3442;
-
     min-height: 100vh;
+
+    font-family: Arial, sans-serif;
 
     background:
+        radial-gradient(circle at top, #ffd6e7, #ffb6d2 45%, #ff8fba);
 
-        radial-gradient(
-            circle at 10% 10%,
-            #ffd7e5 0%,
-            transparent 25%
-        ),
-
-        radial-gradient(
-            circle at 90% 15%,
-            #ffc2d7 0%,
-            transparent 25%
-        ),
-
-        radial-gradient(
-            circle at 20% 90%,
-            #ffe2eb 0%,
-            transparent 30%
-        ),
-
-        linear-gradient(
-            135deg,
-            #fff2f6,
-            #ffd8e5
-        );
-
+    color: #222;
 }
 
 
-
-/* ==================================================
+/* =========================
    HALAMAN
-================================================== */
+========================= */
 
-.page {
+.halaman {
+    display: none;
 
     min-height: 100vh;
 
-    display: none;
-
+    align-items: center;
     justify-content: center;
 
-    align-items: center;
-
-    flex-direction: column;
-
     padding: 20px;
-
 }
 
-
-.page.active {
+.halaman.aktif {
     display: flex;
 }
 
 
-
-/* ==================================================
+/* =========================
    CARD
-================================================== */
+========================= */
 
-.card {
+.card,
+.photo-card,
+.result-card {
 
-    width: 90%;
-
+    width: 100%;
     max-width: 430px;
 
-    padding: 35px;
-
-    background:
-        rgba(255, 255, 255, 0.96);
+    background: rgba(255, 255, 255, 0.94);
 
     border-radius: 25px;
+
+    padding: 30px;
 
     text-align: center;
 
     box-shadow:
-        0 15px 40px
-        rgba(110, 50, 70, 0.15);
-
+        0 15px 40px rgba(0, 0, 0, 0.18);
 }
 
 
+/* =========================
+   TEXT
+========================= */
 
-/* ==================================================
-   KUCING
-================================================== */
-
-.cat-icon {
-
-    font-size: 50px;
-
-    margin-bottom: 8px;
-
+.cat {
+    font-size: 55px;
+    margin-bottom: 5px;
 }
 
+h1 {
+    margin-top: 5px;
+    margin-bottom: 10px;
 
-.cat-icon.small {
-
-    font-size: 35px;
-
-    margin-bottom: 0;
-
+    font-size: 30px;
 }
 
-
-
-/* ==================================================
-   JUDUL
-================================================== */
-
-.card h1 {
-
-    margin: 5px 0 10px;
-
-    font-size: 32px;
-
-    color: #713f50;
-
+h2 {
+    font-size: 21px;
+    margin: 20px 0;
 }
-
 
 .subtitle {
-
-    color: #9b6d7c;
-
-    margin-bottom: 30px;
-
+    color: #777;
 }
 
-
-
-/* ==================================================
-   FORM
-================================================== */
-
-label {
-
-    display: block;
-
-    text-align: left;
-
-    margin-top: 16px;
-
-    margin-bottom: 7px;
-
+#nomorPertanyaan {
+    color: #e85c91;
     font-weight: bold;
-
-    color: #68404f;
-
 }
 
+
+/* =========================
+   INPUT
+========================= */
 
 input,
 textarea {
 
     width: 100%;
 
-    padding: 13px;
+    padding: 14px 16px;
 
-    border: 2px solid #edc5d2;
+    margin-top: 12px;
 
-    border-radius: 12px;
+    border: 2px solid #f3a5c3;
 
-    font-size: 16px;
+    border-radius: 15px;
 
     outline: none;
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+    font-size: 16px;
 
+    font-family: inherit;
+
+    background: white;
 }
 
+input:focus,
+textarea:focus {
+
+    border-color: #e84f8a;
+
+    box-shadow:
+        0 0 0 3px rgba(232, 79, 138, 0.12);
+}
 
 textarea {
 
     height: 130px;
 
-    resize: none;
-
+    resize: vertical;
 }
 
 
-input:focus,
-textarea:focus {
-
-    border-color: #d86b91;
-
-}
-
-
-
-/* ==================================================
+/* =========================
    BUTTON
-================================================== */
+========================= */
 
 button {
 
+    width: 100%;
+
     border: none;
 
-    padding: 14px 25px;
+    border-radius: 15px;
 
-    margin-top: 25px;
+    padding: 14px;
 
-    border-radius: 30px;
+    margin-top: 18px;
 
-    background: #713f50;
+    background: #e84f8a;
 
     color: white;
 
-    font-size: 15px;
+    font-size: 16px;
 
     font-weight: bold;
 
     cursor: pointer;
 
     transition: 0.2s;
-
 }
-
 
 button:hover {
 
-    transform: scale(1.03);
+    transform: translateY(-2px);
 
+    background: #d93f79;
+}
+
+button:active {
+
+    transform: scale(0.98);
+}
+
+button.secondary {
+
+    background: #555;
 }
 
 
-button:disabled {
+/* =========================
+   PESAN ERROR
+========================= */
 
-    opacity: 0.5;
+.pesan {
 
-    cursor: not-allowed;
-
-    transform: none;
-
-}
-
-
-
-/* ==================================================
-   ERROR
-================================================== */
-
-.error-message {
-
-    color: #c24768;
-
-    font-weight: bold;
-
-    min-height: 20px;
+    min-height: 24px;
 
     margin-top: 15px;
 
-}
-
-
-
-/* ==================================================
-   PERTANYAAN
-================================================== */
-
-.question-number {
-
-    color: #a16d7d;
-
-    font-size: 14px;
-
-}
-
-
-#judulPertanyaan {
-
-    font-size: 23px;
-
-    line-height: 1.4;
-
-    margin: 20px 0;
-
-}
-
-
-
-/* ==================================================
-   PHOTOBOOTH
-================================================== */
-
-#photobooth {
-
-    text-align: center;
-
-}
-
-
-.booth-title {
-
-    text-align: center;
-
-}
-
-
-.booth-title h1 {
-
-    margin: 0;
-
-    color: #713f50;
-
-}
-
-
-.booth-title p {
-
-    color: #956b7a;
-
-}
-
-
-.photo-counter {
+    color: #e53935;
 
     font-weight: bold;
-
-    color: #713f50;
-
 }
 
 
-
-/* ==================================================
+/* =========================
    CAMERA
-================================================== */
+========================= */
 
-.camera-container {
+.camera-box {
 
     position: relative;
 
-    width: 90%;
-
-    max-width: 600px;
-
-    background: black;
-
-    border-radius: 18px;
+    width: 100%;
 
     overflow: hidden;
 
-    box-shadow:
-        0 12px 30px
-        rgba(70, 30, 50, 0.3);
+    border-radius: 20px;
 
+    background: #111;
+
+    margin-top: 20px;
 }
 
-
-#camera {
-
-    width: 100%;
+#video {
 
     display: block;
 
+    width: 100%;
+
+    aspect-ratio: 4 / 3;
+
+    object-fit: cover;
+
     transform: scaleX(-1);
-
 }
-
 
 #countdown {
 
     position: absolute;
 
     top: 50%;
-
     left: 50%;
 
-    transform:
-        translate(-50%, -50%);
-
-    font-size: 100px;
-
-    font-weight: bold;
+    transform: translate(-50%, -50%);
 
     color: white;
 
-    text-shadow:
-        0 3px 15px black;
-
-}
-
-
-#canvas {
-
-    display: none;
-
-}
-
-
-.camera-button {
-
-    background: #d95d86;
-
-    padding:
-        15px 30px;
-
-}
-
-
-
-/* ==================================================
-   HASIL
-================================================== */
-
-#hasilPage {
-
-    justify-content: flex-start;
-
-    padding-top: 35px;
-
-    text-align: center;
-
-    overflow-x: hidden;
-
-}
-
-
-.result-title {
-
-    margin-bottom: 15px;
-
-}
-
-
-.result-title h1 {
-
-    margin: 0;
-
-    color: #713f50;
-
-    font-size: 32px;
-
-}
-
-
-.result-title p {
-
-    color: #956a78;
-
-}
-
-
-
-/* ==================================================
-   DUA POLAROID
-================================================== */
-
-.polaroid-container {
-
-    width: 100%;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: flex-start;
-
-    gap: 30px;
-
-    padding: 25px 15px;
-
-}
-
-
-
-/* ==================================================
-   POLAROID
-================================================== */
-
-.photostrip {
-
-    width: 270px;
-
-    padding:
-        12px
-        12px
-        18px;
-
-    background: #ffb8cd;
-
-    border-radius: 5px;
-
-    position: relative;
-
-    box-shadow:
-        0 15px 30px
-        rgba(100, 50, 70, 0.25);
-
-}
-
-
-.photostrip:nth-child(1) {
-
-    transform: rotate(-4deg);
-
-}
-
-
-.photostrip:nth-child(2) {
-
-    transform: rotate(4deg);
-
-}
-
-
-
-/* ==================================================
-   HEADER
-================================================== */
-
-.photostrip-header {
-
-    height: 65px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background: #ffb8cd;
-
-}
-
-
-.cat-decoration {
-
-    font-size: 40px;
-
-}
-
-
-
-/* ==================================================
-   JUDUL POLAROID
-================================================== */
-
-.photostrip-title {
-
-    text-align: center;
-
-    color: #713f50;
-
-    font-family: cursive;
+    font-size: 80px;
 
     font-weight: bold;
 
-    font-size: 17px;
+    text-shadow:
+        0 3px 15px black;
+}
 
-    margin-bottom: 10px;
+#statusFoto {
 
+    color: #777;
+
+    margin-bottom: 0;
 }
 
 
+/* =========================
+   HASIL FOTO
+========================= */
 
-/* ==================================================
-   FOTO
-================================================== */
+#hasilFoto {
 
-.photo-box {
+    display: flex;
 
-    width: 100%;
+    justify-content: center;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+
+    margin: 20px 0;
+}
+
+.strip {
+
+    width: 150px;
 
     background: white;
 
-    padding: 4px;
+    padding: 10px;
 
-    margin-bottom: 8px;
-
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
+.strip-title {
 
-.photo-box img {
+    font-size: 13px;
 
-    width: 100%;
+    font-weight: bold;
+
+    margin-bottom: 8px;
+}
+
+.strip img {
 
     display: block;
 
+    width: 100%;
+
+    margin-bottom: 7px;
 }
 
+.strip-date {
 
-
-/* ==================================================
-   FOOTER
-================================================== */
-
-.photostrip-footer {
-
-    text-align: center;
-
-    color: #713f50;
-
-    font-family: cursive;
-
-    font-weight: bold;
-
-    font-size: 16px;
-
-    margin-top: 13px;
-
-}
-
-
-.photostrip-date {
-
-    font-family: Arial, sans-serif;
-
-    font-size: 11px;
-
-    font-weight: normal;
-
-    color: #8d596b;
+    font-size: 10px;
 
     margin-top: 5px;
 
+    font-weight: bold;
 }
 
 
-
-/* ==================================================
-   BUTTON HASIL
-================================================== */
-
-.result-buttons {
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 2px;
-
-    margin-bottom: 40px;
-
-}
-
-
-.save-button {
-
-    background: #d95d86;
-
-    box-shadow:
-        0 7px 18px
-        rgba(150, 60, 90, 0.25);
-
-}
-
-
-.retry-button {
-
-    background: white;
-
-    color: #713f50;
-
-    border:
-        2px solid #e4a1b7;
-
-}
-
-
-
-/* ==================================================
+/* =========================
    MOBILE
-================================================== */
+========================= */
 
-@media (max-width: 700px) {
+@media (max-width: 500px) {
 
-    .polaroid-container {
+    .card,
+    .photo-card,
+    .result-card {
 
-        gap: 15px;
+        padding: 22px;
 
-        padding: 20px 8px;
-
+        border-radius: 20px;
     }
 
-
-    .photostrip {
-
-        width: 44vw;
-
-        max-width: 250px;
-
-        padding:
-            8px
-            8px
-            14px;
-
+    h1 {
+        font-size: 25px;
     }
 
-
-    .photostrip-header {
-
-        height: 55px;
-
+    h2 {
+        font-size: 18px;
     }
 
-
-    .cat-decoration {
-
-        font-size: 30px;
-
+    #hasilFoto {
+        gap: 10px;
     }
 
-
-    .photostrip-title {
-
-        font-size: 12px;
-
-    }
-
-
-    .photostrip-footer {
-
-        font-size: 12px;
-
-    }
-
-
-    .photostrip-date {
-
-        font-size: 8px;
-
-    }
-
-}
-
-
-
-/* ==================================================
-   HP KECIL
-================================================== */
-
-@media (max-width: 380px) {
-
-    .polaroid-container {
-
-        gap: 8px;
-
-    }
-
-
-    .photostrip {
-
-        width: 45vw;
-
+    .strip {
+        width: 135px;
     }
 
 }
