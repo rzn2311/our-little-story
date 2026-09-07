@@ -1,13 +1,26 @@
 // =====================================================
+// OUR LITTLE STORY - SCRIPT.JS
+// =====================================================
+
+
+// =====================================================
 // ELEMENT HTML
 // =====================================================
 
 const video = document.getElementById("video");
 const canvas = document.createElement("canvas");
 
+
+// =====================================================
+// VARIABLE
+// =====================================================
+
 let fotoArray = [];
+
 let namaUser = "";
+
 let pertanyaanSekarang = 0;
+
 let cameraStream = null;
 
 
@@ -17,7 +30,7 @@ let cameraStream = null;
 
 const tanggalPhotobooth = "26 Desember 2024";
 
-// Nomor WhatsApp tujuan
+// NOMOR WHATSAPP TUJUAN
 const nomorWhatsApp = "6285776504819";
 
 
@@ -66,7 +79,7 @@ const pertanyaanList = [
 
 
 // =====================================================
-// NORMALISASI TEXT
+// NORMALISASI JAWABAN
 // =====================================================
 
 function normalisasi(text) {
@@ -80,28 +93,31 @@ function normalisasi(text) {
 
 
 // =====================================================
-// CEK TANGGAL JADIAN
+// CEK TANGGAL
 // =====================================================
 
 function cekTanggal() {
 
-    const namaInput =
-        document.getElementById("nama");
-
-    const tanggalInput =
-        document.getElementById("tanggal");
-
-    const pesan =
-        document.getElementById("pesanTanggal");
-
-
     const nama =
-        namaInput.value.trim();
+        document
+            .getElementById("nama")
+            .value
+            .trim();
 
     const tanggal =
-        normalisasi(tanggalInput.value);
+        normalisasi(
+            document
+                .getElementById("tanggal")
+                .value
+        );
+
+    const pesan =
+        document.getElementById(
+            "pesanTanggal"
+        );
 
 
+    // Nama kosong
     if (nama === "") {
 
         pesan.textContent =
@@ -112,15 +128,20 @@ function cekTanggal() {
     }
 
 
+    // Tanggal yang benar
     const tanggalBenar = [
 
         "26 desember 2024",
+
         "26 12 2024"
 
     ];
 
 
-    if (tanggalBenar.includes(tanggal)) {
+    // Jika benar
+    if (
+        tanggalBenar.includes(tanggal)
+    ) {
 
         namaUser = nama;
 
@@ -143,6 +164,7 @@ function cekTanggal() {
 
     }
 
+    // Jika salah
     else {
 
         pesan.textContent =
@@ -160,34 +182,55 @@ function cekTanggal() {
 function tampilkanPertanyaan() {
 
     const data =
-        pertanyaanList[pertanyaanSekarang];
+        pertanyaanList[
+            pertanyaanSekarang
+        ];
 
 
-    document.getElementById(
-        "nomorPertanyaan"
-    ).textContent =
+    const nomor =
+        document.getElementById(
+            "nomorPertanyaan"
+        );
+
+
+    const pertanyaan =
+        document.getElementById(
+            "pertanyaan"
+        );
+
+
+    const input =
+        document.getElementById(
+            "jawaban"
+        );
+
+
+    const textarea =
+        document.getElementById(
+            "saran"
+        );
+
+
+    const pesan =
+        document.getElementById(
+            "pesanJawaban"
+        );
+
+
+    // Nomor pertanyaan
+    nomor.textContent =
         "Pertanyaan " +
         (pertanyaanSekarang + 1) +
         " dari " +
         pertanyaanList.length;
 
 
-    document.getElementById(
-        "pertanyaan"
-    ).textContent =
+    // Isi pertanyaan
+    pertanyaan.textContent =
         data.pertanyaan;
 
 
-    const input =
-        document.getElementById("jawaban");
-
-    const textarea =
-        document.getElementById("saran");
-
-    const pesan =
-        document.getElementById("pesanJawaban");
-
-
+    // Bersihkan pesan
     pesan.textContent = "";
 
 
@@ -195,11 +238,15 @@ function tampilkanPertanyaan() {
     // PERTANYAAN SARAN
     // =================================================
 
-    if (data.tipe === "saran") {
+    if (
+        data.tipe === "saran"
+    ) {
 
-        input.style.display = "none";
+        input.style.display =
+            "none";
 
-        textarea.style.display = "block";
+        textarea.style.display =
+            "block";
 
         textarea.value = "";
 
@@ -213,9 +260,11 @@ function tampilkanPertanyaan() {
 
     else {
 
-        input.style.display = "block";
+        input.style.display =
+            "block";
 
-        textarea.style.display = "none";
+        textarea.style.display =
+            "none";
 
         input.value = "";
 
@@ -233,7 +282,10 @@ function tampilkanPertanyaan() {
 function cekJawaban() {
 
     const data =
-        pertanyaanList[pertanyaanSekarang];
+        pertanyaanList[
+            pertanyaanSekarang
+        ];
+
 
     const pesan =
         document.getElementById(
@@ -242,10 +294,12 @@ function cekJawaban() {
 
 
     // =================================================
-    // JIKA PERTANYAAN TERAKHIR = SARAN
+    // PERTANYAAN SARAN
     // =================================================
 
-    if (data.tipe === "saran") {
+    if (
+        data.tipe === "saran"
+    ) {
 
         const saran =
             document
@@ -254,6 +308,7 @@ function cekJawaban() {
                 .trim();
 
 
+        // Jika kosong
         if (saran === "") {
 
             pesan.style.color =
@@ -267,20 +322,20 @@ function cekJawaban() {
         }
 
 
-        // Simpan sebagai cadangan
-        localStorage.setItem(
-            "saranMoment",
-            saran
-        );
-
-
+        // Simpan di browser
         localStorage.setItem(
             "namaUser",
             namaUser
         );
 
 
-        // Kirim ke WhatsApp
+        localStorage.setItem(
+            "saranMoment",
+            saran
+        );
+
+
+        // KIRIM KE WHATSAPP
         kirimSaran(saran);
 
         return;
@@ -292,18 +347,15 @@ function cekJawaban() {
     // PERTANYAAN BIASA
     // =================================================
 
-    const input =
-        document.getElementById(
-            "jawaban"
-        );
-
-
     const jawaban =
         normalisasi(
-            input.value
+            document
+                .getElementById("jawaban")
+                .value
         );
 
 
+    // Jawaban kosong
     if (jawaban === "") {
 
         pesan.style.color =
@@ -321,7 +373,9 @@ function cekJawaban() {
     // PERTANYAAN BAND
     // =================================================
 
-    if (pertanyaanSekarang === 5) {
+    if (
+        pertanyaanSekarang === 5
+    ) {
 
         const adaLombaSihir =
             jawaban.includes(
@@ -363,6 +417,7 @@ function cekJawaban() {
 
         }
 
+
         return;
 
     }
@@ -372,7 +427,9 @@ function cekJawaban() {
     // JAWABAN NORMAL
     // =================================================
 
-    if (jawaban === data.jawaban) {
+    if (
+        jawaban === data.jawaban
+    ) {
 
         pesan.textContent = "";
 
@@ -394,7 +451,7 @@ function cekJawaban() {
 
 
 // =====================================================
-// LANJUT KE PERTANYAAN BERIKUTNYA
+// LANJUT PERTANYAAN
 // =====================================================
 
 function lanjutPertanyaan() {
@@ -433,7 +490,7 @@ function kirimSaran(saran) {
 
 
     // =================================================
-    // BUAT ISI PESAN
+    // BUAT PESAN WHATSAPP
     // =================================================
 
     const isiPesan =
@@ -449,7 +506,10 @@ ${saran}
 ♡ Sent from Our Little Story`;
 
 
-    // Encode pesan
+    // =================================================
+    // ENCODE PESAN
+    // =================================================
+
     const pesanEncoded =
         encodeURIComponent(
             isiPesan
@@ -468,7 +528,7 @@ ${saran}
 
 
     // =================================================
-    // TAMPILKAN STATUS
+    // TAMPILKAN PESAN
     // =================================================
 
     pesanElement.style.color =
@@ -482,12 +542,15 @@ ${saran}
     // BUKA WHATSAPP
     // =================================================
 
-    setTimeout(() => {
+    setTimeout(
+        function () {
 
-        window.location.href =
-            linkWhatsApp;
+            window.location.href =
+                linkWhatsApp;
 
-    }, 500);
+        },
+        500
+    );
 
 }
 
@@ -499,6 +562,7 @@ ${saran}
 function masukPhotobooth() {
 
     hentikanKamera();
+
 
     fotoArray = [];
 
@@ -540,7 +604,8 @@ async function bukaKamera() {
     try {
 
         cameraStream =
-            await navigator.mediaDevices
+            await navigator
+                .mediaDevices
                 .getUserMedia({
 
                     video: {
@@ -556,7 +621,6 @@ async function bukaKamera() {
 
         video.srcObject =
             cameraStream;
-
 
     }
 
@@ -584,12 +648,18 @@ async function bukaKamera() {
 
 function hentikanKamera() {
 
-    if (cameraStream) {
+    if (
+        cameraStream
+    ) {
 
         cameraStream
             .getTracks()
             .forEach(
-                track => track.stop()
+                function (track) {
+
+                    track.stop();
+
+                }
             );
 
 
@@ -613,7 +683,9 @@ function hentikanKamera() {
 
 function ambilFoto() {
 
-    if (fotoArray.length >= 3) {
+    if (
+        fotoArray.length >= 3
+    ) {
 
         return;
 
@@ -634,36 +706,45 @@ function ambilFoto() {
 
 
     const timer =
-        setInterval(() => {
+        setInterval(
+            function () {
 
-            angka--;
+                angka--;
 
 
-            if (angka > 0) {
+                if (
+                    angka > 0
+                ) {
 
-                countdown.textContent =
-                    angka;
+                    countdown.textContent =
+                        angka;
 
-            }
+                }
 
-            else {
+                else {
 
-                clearInterval(timer);
+                    clearInterval(
+                        timer
+                    );
 
-                countdown.textContent =
-                    "";
 
-                foto();
+                    countdown.textContent =
+                        "";
 
-            }
 
-        }, 1000);
+                    foto();
+
+                }
+
+            },
+            1000
+        );
 
 }
 
 
 // =====================================================
-// AMBIL FOTO DARI VIDEO
+// AMBIL FOTO DARI KAMERA
 // =====================================================
 
 function foto() {
@@ -687,7 +768,9 @@ function foto() {
 
 
     const ctx =
-        canvas.getContext("2d");
+        canvas.getContext(
+            "2d"
+        );
 
 
     // Mirror kamera depan
@@ -703,6 +786,7 @@ function foto() {
     );
 
 
+    // Gambar video ke canvas
     ctx.drawImage(
         video,
         0,
@@ -712,6 +796,7 @@ function foto() {
     );
 
 
+    // Simpan sebagai JPEG
     const fotoData =
         canvas.toDataURL(
             "image/jpeg",
@@ -748,14 +833,16 @@ function foto() {
 
 
 // =====================================================
-// TAMPILKAN HASIL FOTO
+// TAMPILKAN HASIL
 // =====================================================
 
 function tampilkanHasil() {
 
+    // Matikan kamera
     hentikanKamera();
 
 
+    // Pindah halaman
     document.getElementById(
         "halamanPhotobooth"
     ).classList.remove("aktif");
@@ -795,7 +882,7 @@ function tampilkanHasil() {
             "strip";
 
 
-        // Judul strip
+        // Judul
         const title =
             document.createElement(
                 "div"
@@ -815,9 +902,9 @@ function tampilkanHasil() {
         );
 
 
-        // Masukkan 3 foto
+        // 3 foto
         fotoArray.forEach(
-            fotoData => {
+            function (fotoData) {
 
                 const img =
                     document.createElement(
@@ -867,7 +954,7 @@ function tampilkanHasil() {
 
 
 // =====================================================
-// DOWNLOAD PHOTO
+// DOWNLOAD FOTO
 // =====================================================
 
 async function simpanFoto() {
@@ -941,7 +1028,7 @@ async function simpanFoto() {
 
 
     // =================================================
-    // UKURAN STRIP
+    // UKURAN PHOTO STRIP
     // =================================================
 
     const stripWidth =
@@ -960,7 +1047,7 @@ async function simpanFoto() {
 
 
     // =================================================
-    // STRIP PUTIH
+    // BACKGROUND STRIP
     // =================================================
 
     ctx.fillStyle =
@@ -991,17 +1078,17 @@ async function simpanFoto() {
         await Promise.all(
 
             fotoArray.map(
-                fotoData => {
+                function (fotoData) {
 
                     return new Promise(
-                        resolve => {
+                        function (resolve) {
 
                             const img =
                                 new Image();
 
 
                             img.onload =
-                                () => {
+                                function () {
 
                                     resolve(img);
 
@@ -1041,7 +1128,7 @@ async function simpanFoto() {
 
 
         images.forEach(
-            img => {
+            function (img) {
 
                 const photoWidth =
                     stripWidth - 30;
@@ -1118,17 +1205,20 @@ async function simpanFoto() {
 
 
 // =====================================================
-// ULANG FOTO
+// AMBIL FOTO ULANG
 // =====================================================
 
 function ulangFoto() {
 
+    // Matikan kamera lama
     hentikanKamera();
 
 
+    // Hapus foto
     fotoArray = [];
 
 
+    // Pindah ke photobooth
     document.getElementById(
         "halamanHasil"
     ).classList.remove("aktif");
@@ -1139,24 +1229,26 @@ function ulangFoto() {
     ).classList.add("aktif");
 
 
+    // Reset status
     document.getElementById(
         "statusFoto"
     ).textContent =
         "Ambil 3 foto yaa ♡";
 
 
+    // Buka kamera lagi
     bukaKamera();
 
 }
 
 
 // =====================================================
-// SAAT WEBSITE DITUTUP
+// MATIKAN KAMERA SAAT KELUAR
 // =====================================================
 
 window.addEventListener(
     "beforeunload",
-    () => {
+    function () {
 
         hentikanKamera();
 
