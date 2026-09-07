@@ -1,17 +1,13 @@
 // =====================================================
-// DATA
+// ELEMENT HTML
 // =====================================================
 
-let video = document.getElementById("video");
-
-let canvas = document.createElement("canvas");
+const video = document.getElementById("video");
+const canvas = document.createElement("canvas");
 
 let fotoArray = [];
-
 let namaUser = "";
-
 let pertanyaanSekarang = 0;
-
 let cameraStream = null;
 
 
@@ -19,21 +15,20 @@ let cameraStream = null;
 // KONFIGURASI
 // =====================================================
 
-const tanggalJadianBenar = "26 desember 2024";
-
 const tanggalPhotobooth = "26 Desember 2024";
 
-
 // =====================================================
-// FORMspree
+// PENTING!
+// GANTI URL DI BAWAH DENGAN ENDPOINT FORMSPREE KAMU
+// Contoh:
+// https://formspree.io/f/abcdwxyz
 // =====================================================
 
-// GANTI BAGIAN INI DENGAN ENDPOINT FORMSPREE KAMU
 const FORMSPREE_URL = "https://formspree.io/f/XXXXXXXX";
 
 
 // =====================================================
-// PERTANYAAN
+// DAFTAR PERTANYAAN
 // =====================================================
 
 const pertanyaanList = [
@@ -77,7 +72,7 @@ const pertanyaanList = [
 
 
 // =====================================================
-// NORMALISASI JAWABAN
+// NORMALISASI TEXT
 // =====================================================
 
 function normalisasi(text) {
@@ -91,54 +86,71 @@ function normalisasi(text) {
 
 
 // =====================================================
-// CEK TANGGAL
+// CEK TANGGAL JADIAN
 // =====================================================
 
 function cekTanggal() {
 
-    const nama = document
-        .getElementById("nama")
-        .value
-        .trim();
+    const namaInput =
+        document.getElementById("nama");
 
-    const tanggal = normalisasi(
-        document.getElementById("tanggal").value
-    );
+    const tanggalInput =
+        document.getElementById("tanggal");
 
-    const pesan = document.getElementById("pesanTanggal");
+    const pesan =
+        document.getElementById("pesanTanggal");
+
+
+    const nama =
+        namaInput.value.trim();
+
+    const tanggal =
+        normalisasi(tanggalInput.value);
 
 
     if (nama === "") {
 
-        pesan.textContent = "Nama jangan dikosongin yaa 😭";
+        pesan.textContent =
+            "Nama jangan dikosongin yaa 😭";
 
         return;
+
     }
 
 
-    const benar = [
+    const tanggalBenar = [
+
         "26 desember 2024",
+
         "26 12 2024"
+
     ];
 
 
-    if (benar.includes(tanggal)) {
+    if (tanggalBenar.includes(tanggal)) {
 
         namaUser = nama;
 
         pertanyaanSekarang = 0;
 
+        pesan.textContent = "";
+
+
         document
             .getElementById("halamanAwal")
             .classList.remove("aktif");
+
 
         document
             .getElementById("halamanPertanyaan")
             .classList.add("aktif");
 
+
         tampilkanPertanyaan();
 
-    } else {
+    }
+
+    else {
 
         pesan.textContent =
             "Kamu udah ga sayang 😭";
@@ -154,29 +166,41 @@ function cekTanggal() {
 
 function tampilkanPertanyaan() {
 
-    const data = pertanyaanList[pertanyaanSekarang];
+    const data =
+        pertanyaanList[pertanyaanSekarang];
 
-    document.getElementById("nomorPertanyaan").textContent =
+
+    document.getElementById(
+        "nomorPertanyaan"
+    ).textContent =
         "Pertanyaan " +
         (pertanyaanSekarang + 1) +
         " dari " +
         pertanyaanList.length;
 
 
-    document.getElementById("pertanyaan").textContent =
+    document.getElementById(
+        "pertanyaan"
+    ).textContent =
         data.pertanyaan;
 
 
-    const input = document.getElementById("jawaban");
-
-    const textarea = document.getElementById("saran");
-
-
-    input.style.display = "block";
-
-    textarea.style.display = "none";
+    const input =
+        document.getElementById("jawaban");
 
 
+    const textarea =
+        document.getElementById("saran");
+
+
+    const pesan =
+        document.getElementById("pesanJawaban");
+
+
+    pesan.textContent = "";
+
+
+    // Pertanyaan saran
     if (data.tipe === "saran") {
 
         input.style.display = "none";
@@ -185,7 +209,16 @@ function tampilkanPertanyaan() {
 
         textarea.value = "";
 
-    } else {
+        textarea.focus();
+
+    }
+
+    // Pertanyaan biasa
+    else {
+
+        input.style.display = "block";
+
+        textarea.style.display = "none";
 
         input.value = "";
 
@@ -202,13 +235,16 @@ function tampilkanPertanyaan() {
 
 function cekJawaban() {
 
-    const data = pertanyaanList[pertanyaanSekarang];
+    const data =
+        pertanyaanList[pertanyaanSekarang];
 
-    const pesan = document.getElementById("pesanJawaban");
+
+    const pesan =
+        document.getElementById("pesanJawaban");
 
 
     // =================================================
-    // JIKA SARAN / MOMENT TERAKHIR
+    // JIKA PERTANYAAN TERAKHIR = SARAN
     // =================================================
 
     if (data.tipe === "saran") {
@@ -222,60 +258,88 @@ function cekJawaban() {
 
         if (saran === "") {
 
+            pesan.style.color = "#e53935";
+
             pesan.textContent =
                 "Tulis moment-nya dulu yaa ♡";
 
             return;
+
         }
 
 
-        // SIMPAN DI BROWSER
+        // Simpan lokal sebagai cadangan
         localStorage.setItem(
             "saranMoment",
             saran
         );
 
 
-        // KIRIM KE FORMSPREE
+        // Kirim ke Formspree
         kirimSaran(saran);
 
         return;
+
     }
 
 
     // =================================================
-    // JAWABAN BIASA
+    // PERTANYAAN BIASA
     // =================================================
 
+    const input =
+        document.getElementById("jawaban");
+
+
     const jawaban =
-        normalisasi(
-            document
-                .getElementById("jawaban")
-                .value
-        );
+        normalisasi(input.value);
 
 
-    // ===============================
-    // VALIDASI BAND
-    // ===============================
+    if (jawaban === "") {
+
+        pesan.style.color = "#e53935";
+
+        pesan.textContent =
+            "Jawab dulu yaa 😭";
+
+        return;
+
+    }
+
+
+    // =================================================
+    // PERTANYAAN BAND
+    // =================================================
 
     if (pertanyaanSekarang === 5) {
 
-        const band1 =
+        const adaLombaSihir =
             jawaban.includes("lomba sihir");
 
-        const band2 =
+
+        const adaRealityClub =
             jawaban.includes("reality club");
 
-        const band3 =
+
+        const adaBlackHorses =
             jawaban.includes("black horses");
 
 
-        if (band1 && band2 && band3) {
+        if (
+            adaLombaSihir &&
+            adaRealityClub &&
+            adaBlackHorses
+        ) {
+
+            pesan.textContent = "";
 
             lanjutPertanyaan();
 
-        } else {
+        }
+
+        else {
+
+            pesan.style.color = "#e53935";
 
             pesan.textContent =
                 "Belum lengkap 😭 Sebutkan 3 band yang benar yaa.";
@@ -283,23 +347,28 @@ function cekJawaban() {
         }
 
         return;
+
     }
 
 
-    // ===============================
+    // =================================================
     // JAWABAN NORMAL
-    // ===============================
+    // =================================================
 
     if (jawaban === data.jawaban) {
 
+        pesan.textContent = "";
+
         lanjutPertanyaan();
 
-    } else {
+    }
+
+    else {
+
+        pesan.style.color = "#e53935";
 
         pesan.textContent =
             "Jawabannya belum tepat 😭";
-
-        hentikanKamera();
 
     }
 
@@ -307,21 +376,24 @@ function cekJawaban() {
 
 
 // =====================================================
-// LANJUT PERTANYAAN
+// LANJUT KE PERTANYAAN BERIKUTNYA
 // =====================================================
 
 function lanjutPertanyaan() {
 
-    document.getElementById("pesanJawaban").textContent = "";
-
     pertanyaanSekarang++;
 
 
-    if (pertanyaanSekarang < pertanyaanList.length) {
+    if (
+        pertanyaanSekarang <
+        pertanyaanList.length
+    ) {
 
         tampilkanPertanyaan();
 
-    } else {
+    }
+
+    else {
 
         masukPhotobooth();
 
@@ -331,7 +403,7 @@ function lanjutPertanyaan() {
 
 
 // =====================================================
-// KIRIM SARAN
+// KIRIM SARAN KE FORMSPREE
 // =====================================================
 
 async function kirimSaran(saran) {
@@ -340,82 +412,153 @@ async function kirimSaran(saran) {
         document.getElementById("pesanJawaban");
 
 
+    // Cek apakah URL masih default
+    if (
+        FORMSPREE_URL.includes("XXXXXXXX")
+    ) {
+
+        pesan.style.color = "#e53935";
+
+        pesan.textContent =
+            "Endpoint Formspree belum dipasang 😭";
+
+        console.error(
+            "Ganti FORMSPREE_URL dengan endpoint Formspree kamu."
+        );
+
+        return;
+
+    }
+
+
     pesan.style.color = "#e85c91";
 
     pesan.textContent =
         "Mengirim saran... ♡";
 
 
+    // Data yang dikirim
     const data = {
 
         nama: namaUser,
 
-        tanggal_jadian: "26 Desember 2024",
+        tanggal_jadian:
+            tanggalPhotobooth,
 
         saran: saran,
 
         waktu:
-            new Date().toLocaleString("id-ID")
+            new Date().toLocaleString(
+                "id-ID"
+            )
 
     };
 
 
     try {
 
-        const response = await fetch(
-            FORMSPREE_URL,
-            {
+        const response =
+            await fetch(
+                FORMSPREE_URL,
+                {
 
-                method: "POST",
+                    method: "POST",
 
-                headers: {
+                    headers: {
 
-                    "Content-Type":
-                        "application/json",
+                        "Content-Type":
+                            "application/json",
 
-                    "Accept":
-                        "application/json"
+                        "Accept":
+                            "application/json"
 
-                },
+                    },
 
-                body: JSON.stringify(data)
+                    body:
+                        JSON.stringify(data)
 
-            }
-        );
+                }
+            );
 
+
+        // =============================================
+        // BERHASIL
+        // =============================================
 
         if (response.ok) {
+
+            pesan.style.color =
+                "#e85c91";
 
             pesan.textContent =
                 "Saran berhasil dikirim ♡";
 
 
-            // Tunggu sebentar lalu masuk photobooth
-            setTimeout(() => {
+            // Simpan juga data lengkap di browser
+            localStorage.setItem(
+                "namaUser",
+                namaUser
+            );
 
-                masukPhotobooth();
+            localStorage.setItem(
+                "saranMoment",
+                saran
+            );
 
-            }, 1000);
 
+            // Masuk photobooth setelah 1 detik
+            setTimeout(
+                () => {
 
-        } else {
+                    masukPhotobooth();
 
-            throw new Error(
-                "Gagal mengirim"
+                },
+                1000
             );
 
         }
 
-    } catch (error) {
 
-        console.error(error);
+        // =============================================
+        // GAGAL
+        // =============================================
+
+        else {
+
+            const errorText =
+                await response.text();
+
+            console.error(
+                "Formspree error:",
+                response.status,
+                errorText
+            );
 
 
-        pesan.style.color = "#e53935";
+            pesan.style.color =
+                "#e53935";
+
+            pesan.textContent =
+                "Gagal mengirim saran 😭";
+
+        }
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Network error:",
+            error
+        );
+
+
+        pesan.style.color =
+            "#e53935";
 
         pesan.textContent =
-            "Gagal mengirim saran 😭 Coba lagi ya.";
-
+            "Gagal mengirim saran 😭";
 
     }
 
@@ -430,21 +573,29 @@ function masukPhotobooth() {
 
     hentikanKamera();
 
+
     fotoArray = [];
 
-    document.getElementById("statusFoto").textContent =
+
+    document.getElementById(
+        "statusFoto"
+    ).textContent =
         "Ambil 3 foto yaa ♡";
 
 
-    document.getElementById("halamanPertanyaan")
-        .classList.remove("aktif");
+    document.getElementById(
+        "halamanPertanyaan"
+    ).classList.remove("aktif");
 
 
-    document.getElementById("halamanPhotobooth")
-        .classList.add("aktif");
+    document.getElementById(
+        "halamanPhotobooth"
+    ).classList.add("aktif");
 
 
-    document.getElementById("info").textContent =
+    document.getElementById(
+        "info"
+    ).textContent =
         tanggalPhotobooth + " ♡";
 
 
@@ -462,28 +613,38 @@ async function bukaKamera() {
     try {
 
         cameraStream =
-            await navigator.mediaDevices.getUserMedia({
+            await navigator.mediaDevices
+                .getUserMedia({
 
-                video: {
-                    facingMode: "user"
-                },
+                    video: {
 
-                audio: false
+                        facingMode: "user"
 
-            });
+                    },
+
+                    audio: false
+
+                });
 
 
         video.srcObject =
             cameraStream;
 
 
-    } catch (error) {
+    }
 
-        console.error(error);
+    catch (error) {
+
+        console.error(
+            "Camera error:",
+            error
+        );
 
 
-        document.getElementById("statusFoto").textContent =
-            "Kamera tidak bisa dibuka. Pastikan izin kamera sudah diberikan.";
+        document.getElementById(
+            "statusFoto"
+        ).textContent =
+            "Kamera tidak bisa dibuka. Izinkan akses kamera yaa.";
 
     }
 
@@ -500,7 +661,10 @@ function hentikanKamera() {
 
         cameraStream
             .getTracks()
-            .forEach(track => track.stop());
+            .forEach(
+                track => track.stop()
+            );
+
 
         cameraStream = null;
 
@@ -529,62 +693,90 @@ function ambilFoto() {
     }
 
 
+    const countdown =
+        document.getElementById(
+            "countdown"
+        );
+
+
     let angka = 3;
 
-    const countdown =
-        document.getElementById("countdown");
 
-
-    countdown.textContent = angka;
+    countdown.textContent =
+        angka;
 
 
     const timer =
-        setInterval(() => {
+        setInterval(
+            () => {
 
-            angka--;
+                angka--;
 
-            if (angka > 0) {
 
-                countdown.textContent =
-                    angka;
+                if (angka > 0) {
 
-            } else {
+                    countdown.textContent =
+                        angka;
 
-                clearInterval(timer);
+                }
 
-                countdown.textContent = "";
+                else {
 
-                foto();
+                    clearInterval(timer);
 
-            }
+                    countdown.textContent =
+                        "";
 
-        }, 1000);
+                    foto();
+
+                }
+
+            },
+            1000
+        );
 
 }
 
 
 // =====================================================
-// FOTO
+// AMBIL FOTO DARI VIDEO
 // =====================================================
 
 function foto() {
 
-    canvas.width = video.videoWidth;
+    if (
+        video.videoWidth === 0 ||
+        video.videoHeight === 0
+    ) {
 
-    canvas.height = video.videoHeight;
+        return;
+
+    }
+
+
+    canvas.width =
+        video.videoWidth;
+
+
+    canvas.height =
+        video.videoHeight;
 
 
     const ctx =
         canvas.getContext("2d");
 
 
-    // Mirror seperti kamera depan
+    // Mirror kamera depan
     ctx.translate(
         canvas.width,
         0
     );
 
-    ctx.scale(-1, 1);
+
+    ctx.scale(
+        -1,
+        1
+    );
 
 
     ctx.drawImage(
@@ -603,10 +795,14 @@ function foto() {
         );
 
 
-    fotoArray.push(fotoData);
+    fotoArray.push(
+        fotoData
+    );
 
 
-    document.getElementById("statusFoto").textContent =
+    document.getElementById(
+        "statusFoto"
+    ).textContent =
         "Foto " +
         fotoArray.length +
         " dari 3 ♡";
@@ -614,7 +810,10 @@ function foto() {
 
     if (fotoArray.length >= 3) {
 
-        tampilkanHasil();
+        setTimeout(
+            tampilkanHasil,
+            300
+        );
 
     }
 
@@ -630,69 +829,107 @@ function tampilkanHasil() {
     hentikanKamera();
 
 
-    document
-        .getElementById("halamanPhotobooth")
-        .classList.remove("aktif");
+    document.getElementById(
+        "halamanPhotobooth"
+    ).classList.remove("aktif");
 
 
-    document
-        .getElementById("halamanHasil")
-        .classList.add("aktif");
+    document.getElementById(
+        "halamanHasil"
+    ).classList.add("aktif");
 
 
     const hasil =
-        document.getElementById("hasilFoto");
+        document.getElementById(
+            "hasilFoto"
+        );
 
 
     hasil.innerHTML = "";
 
 
-    // Buat 2 strip
-    for (let stripNumber = 1; stripNumber <= 2; stripNumber++) {
+    // Buat 2 photostrip
+    for (
+        let stripNumber = 1;
+        stripNumber <= 2;
+        stripNumber++
+    ) {
 
         const strip =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
-        strip.className = "strip";
+
+        strip.className =
+            "strip";
 
 
+        // Judul
         const title =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
-        title.className = "strip-title";
+
+        title.className =
+            "strip-title";
+
 
         title.textContent =
             "🐱 Our Little Moment ♡";
 
 
-        strip.appendChild(title);
+        strip.appendChild(
+            title
+        );
 
 
-        fotoArray.forEach((fotoData) => {
+        // 3 foto
+        fotoArray.forEach(
+            fotoData => {
 
-            const img =
-                document.createElement("img");
-
-            img.src = fotoData;
-
-            strip.appendChild(img);
-
-        });
+                const img =
+                    document.createElement(
+                        "img"
+                    );
 
 
+                img.src =
+                    fotoData;
+
+
+                strip.appendChild(
+                    img
+                );
+
+            }
+        );
+
+
+        // Tanggal
         const date =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
-        date.className = "strip-date";
+
+        date.className =
+            "strip-date";
+
 
         date.textContent =
             tanggalPhotobooth;
 
 
-        strip.appendChild(date);
+        strip.appendChild(
+            date
+        );
 
 
-        hasil.appendChild(strip);
+        hasil.appendChild(
+            strip
+        );
 
     }
 
@@ -700,26 +937,42 @@ function tampilkanHasil() {
 
 
 // =====================================================
-// DOWNLOAD FOTO
+// DOWNLOAD PHOTO
 // =====================================================
 
-function simpanFoto() {
+async function simpanFoto() {
 
-    const canvasDownload =
-        document.createElement("canvas");
+    if (fotoArray.length !== 3) {
+
+        return;
+
+    }
 
 
-    canvasDownload.width = 700;
+    const downloadCanvas =
+        document.createElement(
+            "canvas"
+        );
 
-    canvasDownload.height = 1200;
+
+    downloadCanvas.width =
+        700;
+
+
+    downloadCanvas.height =
+        1200;
 
 
     const ctx =
-        canvasDownload.getContext("2d");
+        downloadCanvas.getContext(
+            "2d"
+        );
 
 
-    // Background
-    ctx.fillStyle = "#ffc1d9";
+    // Background pink
+    ctx.fillStyle =
+        "#ffc1d9";
+
 
     ctx.fillRect(
         0,
@@ -730,12 +983,17 @@ function simpanFoto() {
 
 
     // Judul
-    ctx.fillStyle = "#222";
+    ctx.fillStyle =
+        "#222";
 
-    ctx.textAlign = "center";
+
+    ctx.textAlign =
+        "center";
+
 
     ctx.font =
-        "bold 32px Arial";
+        "bold 30px Arial";
+
 
     ctx.fillText(
         "🐱 Our Little Moment ♡",
@@ -744,51 +1002,94 @@ function simpanFoto() {
     );
 
 
-    const stripWidth = 270;
+    const stripWidth =
+        270;
 
-    const stripX1 = 65;
 
-    const stripX2 = 365;
+    const stripHeight =
+        1030;
+
+
+    const x1 = 65;
+
+    const x2 = 365;
 
     const top = 90;
 
 
+    // Buat strip putih
+    ctx.fillStyle =
+        "white";
+
+
+    ctx.fillRect(
+        x1,
+        top,
+        stripWidth,
+        stripHeight
+    );
+
+
+    ctx.fillRect(
+        x2,
+        top,
+        stripWidth,
+        stripHeight
+    );
+
+
+    // Load semua gambar
+    const images =
+        await Promise.all(
+
+            fotoArray.map(
+                fotoData => {
+
+                    return new Promise(
+                        resolve => {
+
+                            const img =
+                                new Image();
+
+
+                            img.onload =
+                                () => resolve(img);
+
+
+                            img.src =
+                                fotoData;
+
+                        }
+                    );
+
+                }
+            )
+
+        );
+
+
+    // Gambar foto ke dua strip
     for (let s = 0; s < 2; s++) {
 
         const x =
             s === 0
-                ? stripX1
-                : stripX2;
+                ? x1
+                : x2;
 
 
-        // White strip
-        ctx.fillStyle = "white";
-
-        ctx.fillRect(
-            x,
-            top,
-            stripWidth,
-            1030
-        );
+        let y =
+            top + 30;
 
 
-        // Foto
-        let y = top + 35;
-
-
-        fotoArray.forEach((fotoData) => {
-
-            const img =
-                new Image();
-
-
-            img.onload = function () {
+        images.forEach(
+            img => {
 
                 const photoWidth =
                     stripWidth - 30;
 
+
                 const photoHeight =
-                    210;
+                    300;
 
 
                 ctx.drawImage(
@@ -803,53 +1104,40 @@ function simpanFoto() {
                 y +=
                     photoHeight + 15;
 
-
-                ctx.fillStyle = "#222";
-
-                ctx.font =
-                    "bold 14px Arial";
-
-                ctx.textAlign =
-                    "center";
-
-                ctx.fillText(
-                    tanggalPhotobooth,
-                    x + stripWidth / 2,
-                    top + 1000
-                );
+            }
+        );
 
 
-                if (
-                    s === 1 &&
-                    y > 0
-                ) {
-
-                    downloadCanvas(
-                        canvasDownload
-                    );
-
-                }
-
-            };
+        // Tanggal
+        ctx.fillStyle =
+            "#222";
 
 
-            img.src = fotoData;
+        ctx.font =
+            "bold 13px Arial";
 
-        });
+
+        ctx.textAlign =
+            "center";
+
+
+        ctx.fillText(
+            tanggalPhotobooth,
+            x + stripWidth / 2,
+            top + 1000
+        );
 
     }
 
-}
 
-
-// =====================================================
-// DOWNLOAD CANVAS
-// =====================================================
-
-function downloadCanvas(canvas) {
+    // =============================================
+    // DOWNLOAD
+    // =============================================
 
     const link =
-        document.createElement("a");
+        document.createElement(
+            "a"
+        );
 
 
     link.download =
@@ -857,7 +1145,7 @@ function downloadCanvas(canvas) {
 
 
     link.href =
-        canvas.toDataURL(
+        downloadCanvas.toDataURL(
             "image/png"
         );
 
@@ -873,23 +1161,42 @@ function downloadCanvas(canvas) {
 
 function ulangFoto() {
 
+    hentikanKamera();
+
+
     fotoArray = [];
 
 
-    document
-        .getElementById("halamanHasil")
-        .classList.remove("aktif");
+    document.getElementById(
+        "halamanHasil"
+    ).classList.remove("aktif");
 
 
-    document
-        .getElementById("halamanPhotobooth")
-        .classList.add("aktif");
+    document.getElementById(
+        "halamanPhotobooth"
+    ).classList.add("aktif");
 
 
-    document.getElementById("statusFoto").textContent =
+    document.getElementById(
+        "statusFoto"
+    ).textContent =
         "Ambil 3 foto yaa ♡";
 
 
     bukaKamera();
 
 }
+
+
+// =====================================================
+// SAAT HALAMAN DITUTUP / PINDAH
+// =====================================================
+
+window.addEventListener(
+    "beforeunload",
+    () => {
+
+        hentikanKamera();
+
+    }
+);
