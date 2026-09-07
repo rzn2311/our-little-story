@@ -17,14 +17,8 @@ let cameraStream = null;
 
 const tanggalPhotobooth = "26 Desember 2024";
 
-// =====================================================
-// PENTING!
-// GANTI URL DI BAWAH DENGAN ENDPOINT FORMSPREE KAMU
-// Contoh:
-// https://formspree.io/f/abcdwxyz
-// =====================================================
-
-const FORMSPREE_URL = "https://formspree.io/f/XXXXXXXX";
+// Nomor WhatsApp tujuan
+const nomorWhatsApp = "6285776504819";
 
 
 // =====================================================
@@ -121,7 +115,6 @@ function cekTanggal() {
     const tanggalBenar = [
 
         "26 desember 2024",
-
         "26 12 2024"
 
     ];
@@ -188,10 +181,8 @@ function tampilkanPertanyaan() {
     const input =
         document.getElementById("jawaban");
 
-
     const textarea =
         document.getElementById("saran");
-
 
     const pesan =
         document.getElementById("pesanJawaban");
@@ -200,7 +191,10 @@ function tampilkanPertanyaan() {
     pesan.textContent = "";
 
 
-    // Pertanyaan saran
+    // =================================================
+    // PERTANYAAN SARAN
+    // =================================================
+
     if (data.tipe === "saran") {
 
         input.style.display = "none";
@@ -213,7 +207,10 @@ function tampilkanPertanyaan() {
 
     }
 
-    // Pertanyaan biasa
+    // =================================================
+    // PERTANYAAN BIASA
+    // =================================================
+
     else {
 
         input.style.display = "block";
@@ -238,9 +235,10 @@ function cekJawaban() {
     const data =
         pertanyaanList[pertanyaanSekarang];
 
-
     const pesan =
-        document.getElementById("pesanJawaban");
+        document.getElementById(
+            "pesanJawaban"
+        );
 
 
     // =================================================
@@ -258,7 +256,8 @@ function cekJawaban() {
 
         if (saran === "") {
 
-            pesan.style.color = "#e53935";
+            pesan.style.color =
+                "#e53935";
 
             pesan.textContent =
                 "Tulis moment-nya dulu yaa ♡";
@@ -268,14 +267,20 @@ function cekJawaban() {
         }
 
 
-        // Simpan lokal sebagai cadangan
+        // Simpan sebagai cadangan
         localStorage.setItem(
             "saranMoment",
             saran
         );
 
 
-        // Kirim ke Formspree
+        localStorage.setItem(
+            "namaUser",
+            namaUser
+        );
+
+
+        // Kirim ke WhatsApp
         kirimSaran(saran);
 
         return;
@@ -288,16 +293,21 @@ function cekJawaban() {
     // =================================================
 
     const input =
-        document.getElementById("jawaban");
+        document.getElementById(
+            "jawaban"
+        );
 
 
     const jawaban =
-        normalisasi(input.value);
+        normalisasi(
+            input.value
+        );
 
 
     if (jawaban === "") {
 
-        pesan.style.color = "#e53935";
+        pesan.style.color =
+            "#e53935";
 
         pesan.textContent =
             "Jawab dulu yaa 😭";
@@ -314,15 +324,21 @@ function cekJawaban() {
     if (pertanyaanSekarang === 5) {
 
         const adaLombaSihir =
-            jawaban.includes("lomba sihir");
+            jawaban.includes(
+                "lomba sihir"
+            );
 
 
         const adaRealityClub =
-            jawaban.includes("reality club");
+            jawaban.includes(
+                "reality club"
+            );
 
 
         const adaBlackHorses =
-            jawaban.includes("black horses");
+            jawaban.includes(
+                "black horses"
+            );
 
 
         if (
@@ -339,7 +355,8 @@ function cekJawaban() {
 
         else {
 
-            pesan.style.color = "#e53935";
+            pesan.style.color =
+                "#e53935";
 
             pesan.textContent =
                 "Belum lengkap 😭 Sebutkan 3 band yang benar yaa.";
@@ -365,7 +382,8 @@ function cekJawaban() {
 
     else {
 
-        pesan.style.color = "#e53935";
+        pesan.style.color =
+            "#e53935";
 
         pesan.textContent =
             "Jawabannya belum tepat 😭";
@@ -403,164 +421,73 @@ function lanjutPertanyaan() {
 
 
 // =====================================================
-// KIRIM SARAN KE FORMSPREE
+// KIRIM SARAN KE WHATSAPP
 // =====================================================
 
-async function kirimSaran(saran) {
+function kirimSaran(saran) {
 
-    const pesan =
-        document.getElementById("pesanJawaban");
-
-
-    // Cek apakah URL masih default
-    if (
-        FORMSPREE_URL.includes("XXXXXXXX")
-    ) {
-
-        pesan.style.color = "#e53935";
-
-        pesan.textContent =
-            "Endpoint Formspree belum dipasang 😭";
-
-        console.error(
-            "Ganti FORMSPREE_URL dengan endpoint Formspree kamu."
-        );
-
-        return;
-
-    }
-
-
-    pesan.style.color = "#e85c91";
-
-    pesan.textContent =
-        "Mengirim saran... ♡";
-
-
-    // Data yang dikirim
-    const data = {
-
-        nama: namaUser,
-
-        tanggal_jadian:
-            tanggalPhotobooth,
-
-        saran: saran,
-
-        waktu:
-            new Date().toLocaleString(
-                "id-ID"
-            )
-
-    };
-
-
-    try {
-
-        const response =
-            await fetch(
-                FORMSPREE_URL,
-                {
-
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json",
-
-                        "Accept":
-                            "application/json"
-
-                    },
-
-                    body:
-                        JSON.stringify(data)
-
-                }
-            );
-
-
-        // =============================================
-        // BERHASIL
-        // =============================================
-
-        if (response.ok) {
-
-            pesan.style.color =
-                "#e85c91";
-
-            pesan.textContent =
-                "Saran berhasil dikirim ♡";
-
-
-            // Simpan juga data lengkap di browser
-            localStorage.setItem(
-                "namaUser",
-                namaUser
-            );
-
-            localStorage.setItem(
-                "saranMoment",
-                saran
-            );
-
-
-            // Masuk photobooth setelah 1 detik
-            setTimeout(
-                () => {
-
-                    masukPhotobooth();
-
-                },
-                1000
-            );
-
-        }
-
-
-        // =============================================
-        // GAGAL
-        // =============================================
-
-        else {
-
-            const errorText =
-                await response.text();
-
-            console.error(
-                "Formspree error:",
-                response.status,
-                errorText
-            );
-
-
-            pesan.style.color =
-                "#e53935";
-
-            pesan.textContent =
-                "Gagal mengirim saran 😭";
-
-        }
-
-    }
-
-
-    catch (error) {
-
-        console.error(
-            "Network error:",
-            error
+    const pesanElement =
+        document.getElementById(
+            "pesanJawaban"
         );
 
 
-        pesan.style.color =
-            "#e53935";
+    // =================================================
+    // BUAT ISI PESAN
+    // =================================================
 
-        pesan.textContent =
-            "Gagal mengirim saran 😭";
+    const isiPesan =
+`💌 OUR LITTLE STORY ♡
 
-    }
+Nama: ${namaUser}
+
+Tanggal jadian: ${tanggalPhotobooth}
+
+Moment paling bahagia:
+${saran}
+
+♡ Sent from Our Little Story`;
+
+
+    // Encode pesan
+    const pesanEncoded =
+        encodeURIComponent(
+            isiPesan
+        );
+
+
+    // =================================================
+    // LINK WHATSAPP
+    // =================================================
+
+    const linkWhatsApp =
+        "https://wa.me/" +
+        nomorWhatsApp +
+        "?text=" +
+        pesanEncoded;
+
+
+    // =================================================
+    // TAMPILKAN STATUS
+    // =================================================
+
+    pesanElement.style.color =
+        "#e85c91";
+
+    pesanElement.textContent =
+        "Membuka WhatsApp... ♡";
+
+
+    // =================================================
+    // BUKA WHATSAPP
+    // =================================================
+
+    setTimeout(() => {
+
+        window.location.href =
+            linkWhatsApp;
+
+    }, 500);
 
 }
 
@@ -572,7 +499,6 @@ async function kirimSaran(saran) {
 function masukPhotobooth() {
 
     hentikanKamera();
-
 
     fotoArray = [];
 
@@ -596,7 +522,8 @@ function masukPhotobooth() {
     document.getElementById(
         "info"
     ).textContent =
-        tanggalPhotobooth + " ♡";
+        tanggalPhotobooth +
+        " ♡";
 
 
     bukaKamera();
@@ -707,33 +634,30 @@ function ambilFoto() {
 
 
     const timer =
-        setInterval(
-            () => {
+        setInterval(() => {
 
-                angka--;
+            angka--;
 
 
-                if (angka > 0) {
+            if (angka > 0) {
 
-                    countdown.textContent =
-                        angka;
+                countdown.textContent =
+                    angka;
 
-                }
+            }
 
-                else {
+            else {
 
-                    clearInterval(timer);
+                clearInterval(timer);
 
-                    countdown.textContent =
-                        "";
+                countdown.textContent =
+                    "";
 
-                    foto();
+                foto();
 
-                }
+            }
 
-            },
-            1000
-        );
+        }, 1000);
 
 }
 
@@ -808,7 +732,10 @@ function foto() {
         " dari 3 ♡";
 
 
-    if (fotoArray.length >= 3) {
+    // Kalau sudah 3 foto
+    if (
+        fotoArray.length >= 3
+    ) {
 
         setTimeout(
             tampilkanHasil,
@@ -821,7 +748,7 @@ function foto() {
 
 
 // =====================================================
-// TAMPILKAN HASIL
+// TAMPILKAN HASIL FOTO
 // =====================================================
 
 function tampilkanHasil() {
@@ -848,7 +775,10 @@ function tampilkanHasil() {
     hasil.innerHTML = "";
 
 
-    // Buat 2 photostrip
+    // =================================================
+    // BUAT 2 PHOTO STRIP
+    // =================================================
+
     for (
         let stripNumber = 1;
         stripNumber <= 2;
@@ -865,7 +795,7 @@ function tampilkanHasil() {
             "strip";
 
 
-        // Judul
+        // Judul strip
         const title =
             document.createElement(
                 "div"
@@ -885,7 +815,7 @@ function tampilkanHasil() {
         );
 
 
-        // 3 foto
+        // Masukkan 3 foto
         fotoArray.forEach(
             fotoData => {
 
@@ -942,7 +872,9 @@ function tampilkanHasil() {
 
 async function simpanFoto() {
 
-    if (fotoArray.length !== 3) {
+    if (
+        fotoArray.length !== 3
+    ) {
 
         return;
 
@@ -969,7 +901,10 @@ async function simpanFoto() {
         );
 
 
-    // Background pink
+    // =================================================
+    // BACKGROUND
+    // =================================================
+
     ctx.fillStyle =
         "#ffc1d9";
 
@@ -982,7 +917,10 @@ async function simpanFoto() {
     );
 
 
-    // Judul
+    // =================================================
+    // JUDUL
+    // =================================================
+
     ctx.fillStyle =
         "#222";
 
@@ -1002,6 +940,10 @@ async function simpanFoto() {
     );
 
 
+    // =================================================
+    // UKURAN STRIP
+    // =================================================
+
     const stripWidth =
         270;
 
@@ -1017,7 +959,10 @@ async function simpanFoto() {
     const top = 90;
 
 
-    // Buat strip putih
+    // =================================================
+    // STRIP PUTIH
+    // =================================================
+
     ctx.fillStyle =
         "white";
 
@@ -1038,7 +983,10 @@ async function simpanFoto() {
     );
 
 
-    // Load semua gambar
+    // =================================================
+    // LOAD FOTO
+    // =================================================
+
     const images =
         await Promise.all(
 
@@ -1053,7 +1001,11 @@ async function simpanFoto() {
 
 
                             img.onload =
-                                () => resolve(img);
+                                () => {
+
+                                    resolve(img);
+
+                                };
 
 
                             img.src =
@@ -1068,8 +1020,15 @@ async function simpanFoto() {
         );
 
 
-    // Gambar foto ke dua strip
-    for (let s = 0; s < 2; s++) {
+    // =================================================
+    // MASUKKAN FOTO KE STRIP
+    // =================================================
+
+    for (
+        let s = 0;
+        s < 2;
+        s++
+    ) {
 
         const x =
             s === 0
@@ -1108,7 +1067,10 @@ async function simpanFoto() {
         );
 
 
-        // Tanggal
+        // =================================================
+        // TANGGAL
+        // =================================================
+
         ctx.fillStyle =
             "#222";
 
@@ -1130,9 +1092,9 @@ async function simpanFoto() {
     }
 
 
-    // =============================================
+    // =================================================
     // DOWNLOAD
-    // =============================================
+    // =================================================
 
     const link =
         document.createElement(
@@ -1189,7 +1151,7 @@ function ulangFoto() {
 
 
 // =====================================================
-// SAAT HALAMAN DITUTUP / PINDAH
+// SAAT WEBSITE DITUTUP
 // =====================================================
 
 window.addEventListener(
